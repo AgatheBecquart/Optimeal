@@ -49,7 +49,7 @@ jobs:
           az container create \
             --resource-group ${{ secrets.RESSOURCE_GROUP }} \
             --name ${{ inputs.app_name }} \
-            --image ${{ secrets.DOCKERHUB_USERNAME }}/api_modele:latest \
+            --image ${{ secrets.DOCKERHUB_USERNAME }}/api_model:latest \
             --cpu 1 \
             --memory 1 \
             --ip-address public \
@@ -62,7 +62,7 @@ jobs:
             "WORKSPACE_NAME"=${{ secrets.WORKSPACE_NAME }} \
             "SERVER"=${{ secrets.SERVER }} \
             "DATABASE"=${{ secrets.DATABASE }} \
-            "POSTGRES_USER"=${{ secrets.POSTGRES_USER }} \
+            "AZURUSER"=${{ secrets.AZURUSER }} \
             "PASSWORD"=${{ secrets.PASSWORD }} \
             "SECRET_KEY"=${{ secrets.SECRET_KEY }} \
             "ENV"=${{ secrets.ENV }} 
