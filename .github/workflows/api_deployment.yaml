@@ -1,0 +1,71 @@
+name: Docker-deployment
+
+on:
+    workflow_call:
+        inputs:
+            app_name:
+                required: true
+                type: string
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+
+    - name: Build and Push Docker Image
+      run: |
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/api_modele:latest ./api
+        echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/api_modele:latest
+
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        
+    - name: Create Azure Container Instance
+      uses: azure/CLI@v2
+      with:
+        azcliversion: 2.61.0
+        inlineScript: |
+          az account set --subscription ${{ secrets.SUBSCRIPTION_ID }}
+          
+          # Check if the container exists
+          container_exists=$(az container show --resource-group ${{ secrets.RESOURCE_GROUP }} --name ${{ inputs.app_name }} --query "name" -o tsv || echo "notfound")
+    
+          if [ "$container_exists" != "notfound" ]; then
+            echo "Container instance exists. Deleting..."
+            az container delete --resource-group ${{ secrets.RESOURCE_GROUP }} --name ${{ inputs.app_name }} --yes
+            echo "Container instance deleted."
+          else
+            echo "Container instance does not exist."
+          fi
+    
+          az container create \
+            --resource-group ${{ secrets.RESSOURCE_GROUP }} \
+            --name ${{ inputs.app_name }} \
+            --image ${{ secrets.DOCKERHUB_USERNAME }}/api_modele:latest \
+            --cpu 1 \
+            --memory 1 \
+            --ip-address public \
+            --dns-name-label ${{ inputs.app_name }} \
+            --ports 80 8000 \
+            --environment-variables \
+            "APPLICATIONINSIGHTS_CONNECTION_STRING"=${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }} \
+            "SUBSCRIPTION_ID"=${{ secrets.SUBSCRIPTION_ID }} \
+            "RESSOURCE_GROUP"=${{ secrets.RESSOURCE_GROUP }} \
+            "WORKSPACE_NAME"=${{ secrets.WORKSPACE_NAME }} \
+            "SERVER"=${{ secrets.SERVER }} \
+            "DATABASE"=${{ secrets.DATABASE }} \
+            "POSTGRES_USER"=${{ secrets.POSTGRES_USER }} \
+            "PASSWORD"=${{ secrets.PASSWORD }} \
+            "SECRET_KEY"=${{ secrets.SECRET_KEY }} \
+            "ENV"=${{ secrets.ENV }} 
+
+    - name: Test Endpoint
+      run: curl -I ${{ inputs.app_name }}.francecentral.azurecontainer.io:8000/docs

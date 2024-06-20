@@ -1,0 +1,6 @@
+artifact_location: file:///home/utilisateur/Bureau/DEVIA/OptiMeal/OptiMeal%20-%20Data%20-%20API%20%28copie%29/model/mlruns/760400814827947118
+creation_time: 1716550838395
+experiment_id: '760400814827947118'
+last_update_time: 1716550838395
+lifecycle_stage: active
+name: predict_couverts

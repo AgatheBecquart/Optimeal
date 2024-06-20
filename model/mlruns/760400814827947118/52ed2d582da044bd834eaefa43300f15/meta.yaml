@@ -1,0 +1,15 @@
+artifact_uri: file:///home/utilisateur/Bureau/DEVIA/OptiMeal/OptiMeal%20-%20Data%20-%20API%20%28copie%29/model/mlruns/760400814827947118/52ed2d582da044bd834eaefa43300f15/artifacts
+end_time: 1716550838472
+entry_point_name: ''
+experiment_id: '760400814827947118'
+lifecycle_stage: active
+run_id: 52ed2d582da044bd834eaefa43300f15
+run_name: first_run_2023
+run_uuid: 52ed2d582da044bd834eaefa43300f15
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1716550838452
+status: 4
+tags: []
+user_id: utilisateur

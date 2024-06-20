@@ -1,0 +1,22 @@
+name: Django continuous deployment workflow.
+
+on:
+  push:
+    branches:
+      - main  
+    paths:
+      - 'app_web/**'
+      - '.github/workflows/app_web_continuous_deployment.yaml'
+
+jobs:
+  health-check-job:
+    uses: ./.github/workflows/app_web_continuous_integration.yaml
+    secrets: inherit
+
+  build-and-deploy:
+    needs: [health-check-job]
+    uses: ./.github/workflows/app_web_deployment.yaml
+    with:
+        app_name: appwebtemplate
+    secrets: inherit
+    

@@ -1,0 +1,40 @@
+name: Fast API continuous delivery workflow
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop  
+    paths:
+      - 'api/**'
+      - '.github/workflows/api_continuous_delivery.yaml'
+
+jobs:
+  health-check-job:
+    uses: ./.github/workflows/api_continuous_integration.yaml
+    secrets: inherit
+
+  build-and-deploy:
+    needs: [health-check-job]
+    uses: ./.github/workflows/api_deployment.yaml
+    with:
+        app_name: apimodeletemplatetest
+    secrets: inherit
+
+  delete-resources:
+    runs-on: ubuntu-latest
+    needs: [health-check-job,build-and-deploy]
+    
+    steps:
+    - name: Azure Login
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+  
+    - name: Delete Azure Container Instance
+      uses: azure/CLI@v2
+      with:
+        azcliversion: 2.61.0
+        inlineScript: |
+          az account set --subscription ${{ secrets.SUBSCRIPTION_ID }}
+          az container delete --resource-group ${{ secrets.RESSOURCE_GROUP }} --name apimodeletemplatetest --yes
