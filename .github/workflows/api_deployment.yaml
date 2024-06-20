@@ -19,9 +19,9 @@ jobs:
 
     - name: Build and Push Docker Image
       run: |
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/api_modele:latest ./api
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/api_model:latest ./api
         echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/api_modele:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/api_model:latest
 
     - name: Azure Login
       uses: azure/login@v1

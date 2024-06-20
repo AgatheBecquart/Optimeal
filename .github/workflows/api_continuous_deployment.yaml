@@ -5,7 +5,7 @@ on:
     branches:
       - main  
     paths:
-      - 'api/**'
+      - 'api_model/**'
       - '.github/workflows/api_continuous_deployment.yaml'
 
 jobs:

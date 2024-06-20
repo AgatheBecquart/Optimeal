@@ -8,14 +8,14 @@
                 - 'feat/**'
                 - 'develop'
             paths:
-                - 'api/**'
+                - 'api_model/**' 
                 - '.github/workflows/api_continuous_integration.yaml'
         pull_request:
             types: [opened, synchronize, reopened]
             branches:
                 - develop
             paths:
-              - 'api/**'
+              - 'api_model/**'
               - '.github/workflows/api_continuous_integration.yaml'
         workflow_call:
 
