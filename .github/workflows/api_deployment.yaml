@@ -3,7 +3,7 @@ name: Docker-deployment
 on:
     workflow_call:
         inputs:
-            app_name:
+            app_name:  
                 required: true
                 type: string
 
