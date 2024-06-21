@@ -36,11 +36,11 @@ jobs:
           az account set --subscription ${{ secrets.SUBSCRIPTION_ID }}
           
           # Check if the container exists
-          container_exists=$(az container show --resource-group ${{ secrets.RESOURCE_GROUP }} --name ${{ inputs.app_name }} --query "name" -o tsv || echo "notfound")
+          container_exists=$(az container show --resource-group ${{ secrets.RESSOURCE_GROUP }} --name ${{ inputs.app_name }} --query "name" -o tsv || echo "notfound")
     
           if [ "$container_exists" != "notfound" ]; then
             echo "Container instance exists. Deleting..."
-            az container delete --resource-group ${{ secrets.RESOURCE_GROUP }} --name ${{ inputs.app_name }} --yes
+            az container delete --resource-group ${{ secrets.RESSOURCE_GROUP }} --name ${{ inputs.app_name }} --yes
             echo "Container instance deleted."
           else
             echo "Container instance does not exist."
