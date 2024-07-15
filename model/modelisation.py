@@ -58,7 +58,7 @@ def modelisation(connection, run_name, start_date="2023-01-01", end_date="2024-0
 
         mlflow.log_metric("mse_test", mse_test)
         mlflow.log_metric("r2_test", r2_test)
-
+#AJOUTER MAE, RMSE
         # Save the model to MLflow
         mlflow.sklearn.log_model(model,run_name)
         run_id = run.info.run_id
