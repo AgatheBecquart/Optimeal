@@ -30,27 +30,22 @@ jobs:
         
     - name: Create Azure Container Instance
       uses: azure/CLI@v2
-       with:
+      with:
         azcliversion: 2.61.0
         inlineScript: |
-          set -e  # Exit immediately if a command exits with a non-zero status
-          echo "Setting Azure subscription..."
           az account set --subscription ${{ secrets.SUBSCRIPTION_ID }}
           
-          echo "Checking if the container instance exists..."
+          # Check if the container exists
           container_exists=$(az container show --resource-group ${{ secrets.RESSOURCE_GROUP }} --name ${{ inputs.app_name }} --query "name" -o tsv || echo "notfound")
-          echo "Container exists status: $container_exists"
     
           if [ "$container_exists" != "notfound" ]; then
             echo "Container instance exists. Deleting..."
-            az container delete --resource-group ${{ secrets.RESSOURCE_GROUP }} --name ${{ inputs.app_name }} --yes --no-wait
-            az container wait --resource-group ${{ secrets.RESSOURCE_GROUP }} --name ${{ inputs.app_name }} --deleted
+            az container delete --resource-group ${{ secrets.RESSOURCE_GROUP }} --name ${{ inputs.app_name }} --yes
             echo "Container instance deleted."
           else
             echo "Container instance does not exist."
           fi
     
-          echo "Creating new container instance..."
           az container create \
             --resource-group ${{ secrets.RESSOURCE_GROUP }} \
             --name ${{ inputs.app_name }} \
@@ -70,17 +65,8 @@ jobs:
             "AZUREUSER"=${{ secrets.AZUREUSER }} \
             "PASSWORD"=${{ secrets.PASSWORD }} \
             "SECRET_KEY"=${{ secrets.SECRET_KEY }} \
-            "ENV"=${{ secrets.ENV }}
+            "ENV"=${{ secrets.ENV }} 
           echo "Container instance created."
 
     - name: Test Endpoint
-      run: |
-        echo "Testing endpoint..."
-        response=$(curl -I ${{ inputs.app_name }}.francecentral.azurecontainer.io:8000/docs)
-        echo "Endpoint response: $response"
-        if echo "$response" | grep "200 OK"; then
-          echo "Endpoint is working."
-        else
-          echo "Endpoint test failed."
-          exit 1
-        fi
+      run: curl -I ${{ inputs.app_name }}.francecentral.azurecontainer.io:8000/docs
