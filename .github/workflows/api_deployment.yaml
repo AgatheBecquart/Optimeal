@@ -66,6 +66,7 @@ jobs:
             "PASSWORD"=${{ secrets.PASSWORD }} \
             "SECRET_KEY"=${{ secrets.SECRET_KEY }} \
             "ENV"=${{ secrets.ENV }} 
+          echo "Container instance created."
 
     - name: Test Endpoint
       run: curl -I ${{ inputs.app_name }}.francecentral.azurecontainer.io:8000/docs
