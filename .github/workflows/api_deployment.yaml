@@ -62,7 +62,7 @@ jobs:
             "WORKSPACE_NAME"=${{ secrets.WORKSPACE_NAME }} \
             "SERVER"=${{ secrets.SERVER }} \
             "DATABASE"=${{ secrets.DATABASE }} \
-            "POSTGRES_USER"=${{ secrets.POSTGRES_USER }} \
+            "AZUREUSER"=${{ secrets.AZUREUSER }} \
             "PASSWORD"=${{ secrets.PASSWORD }} \
             "SECRET_KEY"=${{ secrets.SECRET_KEY }} \
             "ENV"=${{ secrets.ENV }} 
