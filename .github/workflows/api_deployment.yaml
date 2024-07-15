@@ -49,7 +49,7 @@ jobs:
           az container create \
             --resource-group ${{ secrets.RESSOURCE_GROUP }} \
             --name ${{ inputs.app_name }} \
-            --image ${{ secrets.DOCKERHUB_USERNAME }}/api_modele:latest \
+            --image ${{ secrets.DOCKERHUB_USERNAME }}/api_model:latest \
             --cpu 1 \
             --memory 1 \
             --ip-address public \
@@ -69,3 +69,5 @@ jobs:
 
     - name: Test Endpoint
       run: curl -I ${{ inputs.app_name }}.francecentral.azurecontainer.io:8000/docs
+
+#comment
