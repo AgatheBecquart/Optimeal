@@ -32,12 +32,12 @@ jobs:
       uses: azure/aci-deploy@v1
       with:
         resource-group: ${{ secrets.RESSOURCE_GROUP }}
-        dns-name-label: optimeal-api-ia
+        dns-name-label: optimeal_api_ia
         image: ${{ secrets.DOCKERHUB_USERNAME }}/api_model:latest
         registry-login-server: docker.io
         registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
         registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
-        name: optimeal_api_ia
+        name: optimeal-api-ia
         location: switzerlandnorth
         ports: '8000'
         secure-environment-variables: |
