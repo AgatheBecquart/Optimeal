@@ -1,0 +1,70 @@
+    # name of our workflow
+    name: Fastapi Continuous Integration workflow
+
+    # triggers for our workflow
+    on:
+        push:
+            branches:
+                - 'feat/**'
+                - 'develop'
+            paths:
+                - 'api_data/**' 
+                - '.github/workflows/api_data_continuous_integration.yaml'
+        pull_request:
+            types: [opened, synchronize, reopened]
+            branches:
+                - develop
+            paths:
+              - 'api_data/**'
+              - '.github/workflows/api_data_continuous_integration.yaml'
+        workflow_call:
+
+    #  jobs definition
+    jobs:
+        health-check-job: # health check job for testing and code formatting check
+        
+            runs-on: ubuntu-latest # os for running the job
+            
+            env:
+                SECRET_KEY: ${{ secrets.SECRET_KEY }}
+                APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}
+            
+            steps:
+                - name: Checkout code # checking our the code at current commit that triggers the workflow
+                  uses: actions/checkout@v2
+
+                - name: Cache dependency # caching dependency will make our build faster.
+                  uses: actions/cache@v2 # for more info checkout pip section documentation at https://github.com/actions/cache
+                  with:
+                        path: ~/.cache/pip
+                        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+                        restore-keys: |
+                            ${{ runner.os }}-pip-
+    
+                - name: Setup python environment # setting python environment to 3.x
+                  uses: actions/setup-python@v2
+                  with:
+                    python-version: '3.12' # if you want multiple python version run just use matrix strategy in job config. See the documentation of GitHub Actions
+            
+                - name: Check Python version # checking the python version to see if 3.x is installed.
+                  run: python --version
+    
+                - name: Install requirements # install application requirements
+                  run: pip install -r api_data/requirements.txt
+                
+                - name: Install Bandit
+                  run: pip install bandit
+
+                - name: Run Security Check
+                  run: bandit -r api
+                  continue-on-error: true
+
+                - name: Check Syntax # check code formatting
+                  run: pycodestyle --statistics --ignore=E501,E712 api
+                  continue-on-error: true
+    
+                # - name: Run Test and Coverage # running tests
+                # #   working-directory: ./api
+                #   run: pytest api --cov-fail-under=80 -vv
+                #   env:
+                #     APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}

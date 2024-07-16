@@ -6,18 +6,18 @@ on:
       - main  
     paths:
       - 'api_model/**'
-      - '.github/workflows/api_continuous_deployment.yaml'
+      - '.github/workflows/api_model_continuous_deployment.yaml'
 
 jobs:
   health-check-job:
-    uses: ./.github/workflows/api_continuous_integration.yaml
+    uses: ./.github/workflows/api_model_continuous_integration.yaml
     secrets: inherit
 
   build-and-deploy:
     needs: [health-check-job]
-    uses: ./.github/workflows/api_deployment.yaml
+    uses: ./.github/workflows/api_model_deployment.yaml
     with:
-        app_name: optimeal
+        app_name: optimeal_model
     secrets: inherit
     
 #com

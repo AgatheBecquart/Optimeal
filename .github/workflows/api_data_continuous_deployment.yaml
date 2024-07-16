@@ -1,0 +1,23 @@
+name: FastAPI continuous deployment workflow.
+
+on:
+  push:
+    branches:
+      - main  
+    paths:
+      - 'api_data/**'
+      - '.github/workflows/api_data_continuous_deployment.yaml'
+
+jobs:
+  health-check-job:
+    uses: ./.github/workflows/api_data_continuous_integration.yaml
+    secrets: inherit
+
+  build-and-deploy:
+    needs: [health-check-job]
+    uses: ./.github/workflows/api_data_deployment.yaml
+    with:
+        app_name: optimeal_data
+    secrets: inherit
+    
+#com

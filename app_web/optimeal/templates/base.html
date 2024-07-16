@@ -1,0 +1,21 @@
+{% load static %} 
+
+<html>
+<head>
+    <title>Optimeal</title>
+    <link rel="stylesheet" href="{% static 'app.css' %}">
+</head>
+<body>
+    <h1>Optimeal</h1>
+    {% block content %}{% endblock content %}
+    
+    {% if user.is_authenticated %}
+        <p>Vous êtes connecté en tant que {{ user }}.</p>
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit">Se déconnecter</button>
+        </form>
+        <p>Voulez-vous <a href="{% url 'password_change' %}">changer votre mot de passe ?</a></p>
+    {% endif %}
+</body>
+</html>

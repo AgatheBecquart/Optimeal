@@ -9,14 +9,14 @@
                 - 'develop'
             paths:
                 - 'api_model/**' 
-                - '.github/workflows/api_continuous_integration.yaml'
+                - '.github/workflows/api_model_continuous_integration.yaml'
         pull_request:
             types: [opened, synchronize, reopened]
             branches:
                 - develop
             paths:
               - 'api_model/**'
-              - '.github/workflows/api_continuous_integration.yaml'
+              - '.github/workflows/api_model_continuous_integration.yaml'
         workflow_call:
 
     #  jobs definition
