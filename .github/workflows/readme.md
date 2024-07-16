@@ -29,7 +29,6 @@ Before using the workflows, ensure you have the necessary secrets set up in your
 - `AZURE_CREDENTIALS`
 - `SUBSCRIPTION_ID`
 - `RESOURCE_GROUP`
-- `RESSOURCE_GROUP`
 - `WORKSPACE_NAME`
 - `SERVER`
 - `DATABASE`

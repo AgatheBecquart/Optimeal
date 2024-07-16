@@ -47,7 +47,7 @@ jobs:
           fi
     
           az container create \
-            --resource-group ${{ secrets.RESSOURCE_GROUP }} \
+            --resource-group ${{ secrets.RESOURCE_GROUP }} \
             --name ${{ inputs.app_name }} \
             --image ${{ secrets.DOCKERHUB_USERNAME }}/app_web:latest \
             --cpu 1 \

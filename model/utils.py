@@ -28,7 +28,7 @@ def get_run(run_name,experiment_name):
 
     # Provide your workspace details
     subscription_id = os.getenv("SUBSCRIPTION_ID")
-    resource_group = os.getenv("RESSOURCE_GROUP")
+    resource_group = os.getenv("RESOURCE_GROUP")
     workspace_name = os.getenv("WORKSPACE_NAME")
 
 

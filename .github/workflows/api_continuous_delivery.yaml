@@ -37,4 +37,4 @@ jobs:
         azcliversion: 2.61.0
         inlineScript: |
           az account set --subscription ${{ secrets.SUBSCRIPTION_ID }}
-          az container delete --resource-group ${{ secrets.RESSOURCE_GROUP }} --name apimodeletemplatetest --yes
+          az container delete --resource-group ${{ secrets.RESOURCE_GROUP }} --name apimodeletemplatetest --yes

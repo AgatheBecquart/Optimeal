@@ -29,7 +29,7 @@ def anonymize_id(id):
 
 # Endpoint de l'API météo
 URL = "https://public.opendatasoft.com/api/records/1.0/search/"
-ressource = "?dataset=donnees-synop-essentielles-omm&q="
+resource = "?dataset=donnees-synop-essentielles-omm&q="
 station = f"&refine.nom=ORLY"
 start_date = '2023-09-01'
 end_date = '2024-02-28'
@@ -39,7 +39,7 @@ row_limit = "&rows=10000"
 def fetch_weather_data():
     # Créer l'URL de l'API à partir des dates de début et de fin
     date_fork = f"date%3A%5B{start_date}+TO+{end_date}%5D"
-    endpoint = URL + ressource + date_fork + row_limit + station
+    endpoint = URL + resource + date_fork + row_limit + station
     response = requests.get(endpoint)
     
     daily_temperatures = []
