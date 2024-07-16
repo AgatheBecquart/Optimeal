@@ -1,5 +1,5 @@
     # name of our workflow
-    name: Fastapi Continuous Integration workflow
+    name: API Data Fastapi Continuous Integration workflow
 
     # triggers for our workflow
     on:

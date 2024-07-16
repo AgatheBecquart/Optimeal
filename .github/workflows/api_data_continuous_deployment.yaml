@@ -1,4 +1,4 @@
-name: FastAPI continuous deployment workflow.
+name: API Data FastAPI continuous deployment workflow.
 
 on:
   push:
