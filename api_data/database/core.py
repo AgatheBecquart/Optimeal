@@ -13,7 +13,7 @@ database = os.getenv("DATABASE")
 user = os.getenv("AZUREUSER")
 password = os.getenv("PASSWORD")
 
-DATABASE_URL= f"mssql+pyodbc://{user}:{password}@{server}/{database}?driver=ODBC+Driver+17+for+SQL+Server"
+DATABASE_URL= f"mssql+pyodbc://{user}:{password}@{server}/{database}?driver=ODBC+Driver+17+for+SQL+Server&timeout=90"
 
 class NotFoundError(Exception):
     pass
