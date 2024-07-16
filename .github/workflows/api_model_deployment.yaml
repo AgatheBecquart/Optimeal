@@ -27,13 +27,6 @@ jobs:
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-    # - name: Install Azure CLI
-    #     if: success()  # Only install if previous steps succeeded
-    #     run: |
-    #       sudo apt-get -y install build-essential
-    #       curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-    #       az --version
         
     - name: Create Azure Container Instance
       uses: azure/CLI@v2
@@ -58,7 +51,7 @@ jobs:
             --name ${{ inputs.app_name }} \
             --image ${{ secrets.DOCKERHUB_USERNAME }}/api_model:latest \
             --cpu 1 \
-            --memory 1 \
+            --memory 1.5Gi \
             --ip-address public \
             --dns-name-label ${{ inputs.app_name }} \
             --ports 80 8000 \
@@ -76,5 +69,5 @@ jobs:
           echo "Container instance created."
 
     - name: Test Endpoint
-      run: curl -I ${{ inputs.app_name }}.francecentral.azurecontainer.io:8000/docs
+      run: curl -I ${{ inputs.app_name }}.switzerlandnorth.azurecontainer.io:8000/docs
 #comment
