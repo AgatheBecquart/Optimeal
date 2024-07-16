@@ -1,4 +1,4 @@
-name: API DATA Docker-deployment
+name: API Data Docker-deployment
 
 on:
     workflow_call:
@@ -55,16 +55,16 @@ jobs:
             --ip-address public \
             --dns-name-label ${{ inputs.app_name }} \
             --ports 80 8000 \
-            --environment-variables \
-            "DATABASE"=${{ secrets.DATABASE }} \
-            "APPLICATIONINSIGHTS_CONNECTION_STRING"=${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }} \
-            "SUBSCRIPTION_ID"=${{ secrets.SUBSCRIPTION_ID }} \
-            "RESSOURCE_GROUP"=${{ secrets.RESSOURCE_GROUP }} \
-            "SERVER"=${{ secrets.SERVER }} \
-            "AZUREUSER"=${{ secrets.AZUREUSER }} \
-            "PASSWORD"=${{ secrets.PASSWORD }} \
-            "SECRET_KEY"=${{ secrets.SECRET_KEY }} \
-            "ENV"=${{ secrets.ENV }} 
+            # --environment-variables \
+            # "DATABASE"=${{ secrets.DATABASE }} \
+            # "APPLICATIONINSIGHTS_CONNECTION_STRING"=${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }} \
+            # "SUBSCRIPTION_ID"=${{ secrets.SUBSCRIPTION_ID }} \
+            # "RESSOURCE_GROUP"=${{ secrets.RESSOURCE_GROUP }} \
+            # "SERVER"=${{ secrets.SERVER }} \
+            # "AZUREUSER"=${{ secrets.AZUREUSER }} \
+            # "PASSWORD"=${{ secrets.PASSWORD }} \
+            # "SECRET_KEY"=${{ secrets.SECRET_KEY }} \
+            # "ENV"=${{ secrets.ENV }} 
           echo "Container instance created."
 
     - name: Test Endpoint
