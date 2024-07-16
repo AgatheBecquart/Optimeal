@@ -17,7 +17,7 @@ jobs:
     needs: [health-check-job]
     uses: ./.github/workflows/api_model_deployment.yaml
     with:
-        app_name: optimealmodel
+        app_name: optimeal-model
     secrets: inherit
     
-#commen
+#comment
