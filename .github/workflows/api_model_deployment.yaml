@@ -37,7 +37,7 @@ jobs:
         registry-login-server: docker.io
         registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
         registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
-        name: optimeal-api-ia
+        name: optimeal_api_ia
         location: switzerlandnorth
         ports: '8000'
         secure-environment-variables: |
