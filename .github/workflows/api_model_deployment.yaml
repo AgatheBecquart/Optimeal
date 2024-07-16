@@ -32,25 +32,22 @@ jobs:
       uses: azure/aci-deploy@v1
       with:
         resource-group: ${{ secrets.RESSOURCE_GROUP }}
-        dns-name-label: optimeal-api-ia
+        dns-name-label: ${{ inputs.app_name }} 
         image: ${{ secrets.DOCKERHUB_USERNAME }}/api_model:latest
         registry-login-server: docker.io
         registry-username: ${{ secrets.DOCKERHUB_USERNAME }}
         registry-password: ${{ secrets.DOCKERHUB_PASSWORD }}
-        name: optimeal-api-ia
+        name: ${{ inputs.app_name }} 
         location: switzerlandnorth
         ports: '8000'
         secure-environment-variables: |
           "RESSOURCE_GROUP"=${{ secrets.RESSOURCE_GROUP }} 
-          "APPLICATIONINSIGHTS_CONNECTION_STRING"=${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }} 
-          "SUBSCRIPTION_ID"=${{ secrets.SUBSCRIPTION_ID }} 
           "WORKSPACE_NAME"=${{ secrets.WORKSPACE_NAME }} 
           "SERVER"=${{ secrets.SERVER }} 
           "DATABASE"=${{ secrets.DATABASE }} 
           "AZUREUSER"=${{ secrets.AZUREUSER }} 
           "PASSWORD"=${{ secrets.PASSWORD }} 
           "SECRET_KEY"=${{ secrets.SECRET_KEY }}
-
     
         
     # - name: Create Azure Container Instance
