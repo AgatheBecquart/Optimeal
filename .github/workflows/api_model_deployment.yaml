@@ -43,21 +43,7 @@ jobs:
     #     secure-environment-variables: |
     #       "RESOURCE_GROUP"=${{ secrets.RESOURCE_GROUP }} 
     
-   name: Create Azure Container Instance
-on: [push]
-jobs:
-  create_container_instance:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Set up Azure CLI
-      uses: azure/CLI@v2
-      with:
-        azcliversion: 2.61.0
-
-    - name: Create Azure Container Instance
+- name: Create Azure Container Instance
       uses: azure/CLI@v2
       with:
         azcliversion: 2.61.0
