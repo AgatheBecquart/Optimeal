@@ -24,12 +24,17 @@ class Base(DeclarativeBase):
 
 
 
-class DBCanteenEmployees(Base):
+class DBCanteenEmployeesUser(Base):
 
-    __tablename__ = "canteen_employees"
+    __tablename__ = "canteen_employees_user"
 
     employee_id: Mapped[str] = mapped_column(primary_key=True, index=True, type_=VARCHAR(50))
     employee_unique_id: Mapped[str]
+    employee_username: Mapped[str]
+    employee_password: Mapped[str]
+    employee_email: Mapped[str]
+    employee_first_name: Mapped[str]
+    employee_last_name: Mapped[str]
     employee_zip_code_prefix: Mapped[str] 
     employee_city: Mapped[str]
     employee_state: Mapped[str]
