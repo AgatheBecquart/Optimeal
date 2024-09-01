@@ -22,8 +22,7 @@ def get_vacation_data(location='Lille'):
 
     return pd.DataFrame(vacances)
 
-
-def feature_engineering(df):
+def feature_engineering(df, expected_columns=None):
 
     df['id_jour'] = pd.to_datetime(df['id_jour'])  # Assurez-vous que 'id_jour' est de type datetime
 
@@ -56,5 +55,12 @@ def feature_engineering(df):
             df[jour] = 1
 
     df = df.drop(['Jour_Semaine'], axis=1)  
+
+     # Réordonner les colonnes selon l'ordre attendu
+    if expected_columns:
+        missing_columns = set(expected_columns) - set(df.columns)
+        for col in missing_columns:
+            df[col] = 0  # Ajouter les colonnes manquantes avec des valeurs par défaut (par exemple, 0)
+        df = df[expected_columns]
     
     return df

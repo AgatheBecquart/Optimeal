@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 import time
 import pandas as pd
 from api_model.feature_engineering import feature_engineering
+from fastapi import HTTPException
 
 
 router = APIRouter()
@@ -33,9 +34,10 @@ def predict(
     # Stockez 'id_jour' séparément
     id_jour = input_data['id_jour'].iloc[0]
 
-    # Appliquez le feature engineering
-    input_data = feature_engineering(input_data)
-
+    expected_columns = ["id_jour", "temperature", "nb_presence_sur_site", "Vacances_Vacances de la Toussaint", "Vacances_Vacances d'Été", "Vacances_Vacances de Noël", "Vacances_Vacances de Printemps", "Vacances_Vacances d'Hiver",
+    "Vacances_Pont de l'Ascension", "Vacances_Début des Vacances d'Été", "Jour_Semaine_Monday", "Jour_Semaine_Saturday", "Jour_Semaine_Sunday", "Jour_Semaine_Thursday", "Jour_Semaine_Tuesday", "Jour_Semaine_Wednesday"]
+    
+    input_data = feature_engineering(input_data, expected_columns=expected_columns)
 
     # Supprimez la colonne 'id_jour' si elle existe
     if 'id_jour' in input_data.columns:

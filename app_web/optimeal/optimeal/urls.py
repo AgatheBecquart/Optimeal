@@ -2,25 +2,15 @@ from django.contrib import admin
 from django.contrib.auth.views import (
     LoginView, LogoutView, PasswordChangeView, PasswordChangeDoneView)
 from django.urls import path
-
-import authentication.views
-import blog.views
+from django.contrib import admin
+from authentication.views import signup_view, update_employee_view, login_view
+from blog.views import home, predict_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', LoginView.as_view(
-        template_name='authentication/login.html',
-        redirect_authenticated_user=True),
-         name='login'),
-    path('logout/', LogoutView.as_view(), name='logout'),
-    path('change-password/', PasswordChangeView.as_view(
-        template_name='authentication/password_change_form.html'),
-         name='password_change'
-         ),
-    path('change-password-done/', PasswordChangeDoneView.as_view(
-        template_name='authentication/password_change_done.html'),
-         name='password_change_done'
-         ),
-    path('signup/', authentication.views.signup_page, name='signup'),
-    path('home/', blog.views.home, name='home'),
+    path('signup/', signup_view, name='signup'),
+    path('login/', login_view, name='login'),
+    path('update_employee/', update_employee_view, name='update_employee'),
+    path('', home, name='home'),
+    path('predict/', predict_view, name='predict_view'),
 ]

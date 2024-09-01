@@ -3,8 +3,6 @@ from jose import JWTError, jwt
 import os
 from pydantic import BaseModel
 import pickle
-import pandas as pd
-import mlflow
 from dotenv import load_dotenv
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from datetime import datetime

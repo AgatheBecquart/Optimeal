@@ -1,25 +1,21 @@
-from pathlib import Path
 import os
+from pathlib import Path
 from dotenv import load_dotenv
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Charger les variables d'environnement depuis le fichier .env
+load_dotenv()
+
+# Définir les chemins de base
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-9d6%fod11=iaodpv)eby&#1z4(5@--&(t=m4s95w6jo7$!spju'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
+# Configuration de sécurité
+SECRET_KEY = os.getenv('SECRET_KEY', 'votre-cle-secrete-defaut')
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
 ALLOWED_HOSTS = []
+ENCODED_JWT = os.getenv('ENCODED_JWT', 'votre-cle-secrete-defaut')
 
 
-# Application definition
-
+# Applications installées
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -31,6 +27,7 @@ INSTALLED_APPS = [
     'blog',
 ]
 
+# Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -41,14 +38,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+# Configuration des URLs principales
 ROOT_URLCONF = 'optimeal.urls'
 
+# Configuration des templates
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            BASE_DIR.joinpath('templates'),  # <--- add this line
-        ],
+        'DIRS': [BASE_DIR.joinpath('templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -61,65 +58,26 @@ TEMPLATES = [
     },
 ]
 
-
+# Configuration WSGI
 WSGI_APPLICATION = 'optimeal.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
-# settings.py
-
-# Importer les modules nécessaires
-from sqlalchemy import create_engine
-import os
-from dotenv import load_dotenv
-
-# Charger les variables d'environnement depuis le fichier .env
-load_dotenv()
-
-# Définir les paramètres de connexion à Azure SQL
-hostname = os.getenv("SERVER")
-database = os.getenv("DATABASE")
-username = os.getenv("AZUREUSER")
-password = os.getenv("PASSWORD")
-
-# Chaîne de connexion SQLAlchemy à Azure SQL
-azure_connection_string = f"mssql+pyodbc://{username}:{password}@{hostname}/{database}?driver=ODBC+Driver+17+for+SQL+Server"
-
-# Configurer la connexion à la base de données
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',  # Garder cela pour les migrations initiales
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    },
-    'azure_sql': {
-        'ENGINE': 'sql_server.pyodbc',
-        'NAME': database,
-        'USER': username,
-        'PASSWORD': password,
-        'HOST': hostname,
-        'PORT': '',  # Port par défaut
+        'ENGINE': 'mssql',
+        'NAME': os.getenv('DATABASE'),
+        'USER': os.getenv('AZUREUSER'),
+        'PASSWORD': os.getenv('PASSWORD'),
+        'HOST': os.getenv('SERVER'),
+        'PORT': '',  # Par défaut, SQL Server utilise le port 1433
         'OPTIONS': {
             'driver': 'ODBC Driver 17 for SQL Server',
+            'extra_params': 'TrustServerCertificate=yes;',  # Utilisé si SSL est requis sans certificat valide
         },
-    },
+    }
 }
 
-# Utiliser la connexion à Azure SQL comme base de données par défaut
-DATABASE_ROUTERS = ['path.to.your.custom_router.AzureSQLRouter']
 
-
-# Password validation
-# https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
-
+# Validation des mots de passe
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
@@ -135,34 +93,24 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/3.2/topics/i18n/
-
+# Configuration internationale
 LANGUAGE_CODE = 'fr-fr'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.2/howto/static-files/
-
+# Fichiers statiques
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR.joinpath('static/')]
 
-# Default primary key field type
-# https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
-
+# Configuration par défaut pour les clés primaires
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Modèle utilisateur personnalisé
 AUTH_USER_MODEL = 'authentication.User'
 
+# URLs de redirection après login/logout
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = LOGIN_URL
