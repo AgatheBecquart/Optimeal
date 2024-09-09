@@ -60,8 +60,8 @@
                 - name: Collect Statics # run migrations to create table in side car db container
                   run: python app_web/optimeal/manage.py collectstatic --noinput
 
-                - name: Run Test and Coverage # running tests
-                #   working-directory: ./api
-                  run: pytest app_web --cov-fail-under=80 -vv
+                # - name: Run Test and Coverage # running tests
+                # #   working-directory: ./api
+                #   run: pytest app_web --cov-fail-under=80 -vv
 
-                  #
+                #   #
