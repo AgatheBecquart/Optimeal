@@ -9,7 +9,7 @@
                 - 'develop'
                 - 'main' # to remove after testing
             paths:
-                - 'app_web/**'
+                - 'app_web/optimeal/**'
                 - '.github/workflows/app_web_continuous_deployment.yaml'
         pull_request:
             types: [opened, synchronize, reopened]
@@ -44,7 +44,7 @@
                   run: python --version
     
                 - name: Install requirements # install application requirements
-                  run: pip install -r app_web/requirements.txt
+                  run: pip install -r app_web/optimeal/requirements.txt
                 
                 - name: Install Bandit
                   run: pip install bandit
@@ -58,8 +58,10 @@
                   continue-on-error: true
                     
                 - name: Collect Statics # run migrations to create table in side car db container
-                  run: python app_web/manage.py collectstatic --noinput
+                  run: python app_web/optimeal/manage.py collectstatic --noinput
 
                 - name: Run Test and Coverage # running tests
                 #   working-directory: ./api
                   run: pytest app_web --cov-fail-under=80 -vv
+
+                  #

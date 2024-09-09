@@ -19,9 +19,9 @@ jobs:
 
     - name: Build and Push Docker Image
       run: |
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/app_web:latest ./app_web
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/agathe19/app_web ./app_web
         echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/app_web:latest
+        docker push ${{ secrets.DOCKERHUB_USERNAME }}/agathe19/app_web:latest
 
     - name: Azure Login
       uses: azure/login@v1
@@ -60,4 +60,6 @@ jobs:
             "APP_NAME"=${{ secrets.APP_NAME }} \
 
     - name: Test Endpoint
-      run: curl -I ${{ inputs.app_name }}.francecentral.azurecontainer.io:8000/
+      run: curl -I ${{ inputs.app_name }}.switzerlandnorth.azurecontainer.io:8000/
+
+      #

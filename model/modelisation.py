@@ -1,13 +1,27 @@
 from utils import connect_to_database
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+import mlflow
+from dotenv import load_dotenv
+import os
 
 def modelisation(connection, run_name, start_date="2023-01-01", end_date="2024-03-01"):
-    import pandas as pd
-    from sklearn.model_selection import train_test_split
-    from sklearn.linear_model import LinearRegression
-    from sklearn.metrics import mean_squared_error, r2_score
-    import mlflow
-    from dotenv import load_dotenv
-    import os
+
+    # Perform model training and evaluation using linear regression.
+
+    # Args:
+    #     connection (object): Database connection object.
+    #     run_name (str): Name of the run.
+    #     start_date (str, optional): Start date for the experiment. Defaults to "2023-01-01".
+    #     end_date (str, optional): End date for the experiment. Defaults to "2024-03-01".
+
+    # Returns:
+    #     str: The ID of the MLflow run.
+
+    # Raises:
+    #     None
 
     load_dotenv()
 
@@ -55,10 +69,15 @@ def modelisation(connection, run_name, start_date="2023-01-01", end_date="2024-0
 
         mse_test = round(mean_squared_error(y_test, model.predict(X_test)), 4)
         r2_test = round(r2_score(y_test, model.predict(X_test)), 4)
+        #AJOUTER MAE, RMSE
+        rmse_test = round(rmse_test(y_test, model.predict(X_test)), 4)
+        mae_test = round(mae_test(y_test, model.predict(X_test)), 4)
 
         mlflow.log_metric("mse_test", mse_test)
         mlflow.log_metric("r2_test", r2_test)
-#AJOUTER MAE, RMSE
+        mlflow.log_metric("rmse_test", rmse_test)
+        mlflow.log_metric("mae_test", mae_test)
+
         # Save the model to MLflow
         mlflow.sklearn.log_model(model,run_name)
         run_id = run.info.run_id
@@ -66,3 +85,4 @@ def modelisation(connection, run_name, start_date="2023-01-01", end_date="2024-0
 
 if __name__== "main":
     connection = connect_to_database()
+ 

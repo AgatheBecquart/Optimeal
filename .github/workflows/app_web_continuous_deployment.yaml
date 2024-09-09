@@ -5,7 +5,7 @@ on:
     branches:
       - main  
     paths:
-      - 'app_web/**'
+      - 'app_web/optimeal/**'
       - '.github/workflows/app_web_continuous_deployment.yaml'
 
 jobs:
@@ -17,6 +17,7 @@ jobs:
     needs: [health-check-job]
     uses: ./.github/workflows/app_web_deployment.yaml
     with:
-        app_name: appwebtemplate
+        app_name: optimeal-web-app
     secrets: inherit
     
+#
