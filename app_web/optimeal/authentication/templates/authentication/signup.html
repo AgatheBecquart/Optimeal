@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
-    <h2>Inscription</h2>
+<div class="container">
+    <h1>Inscription</h1>
+    <br>
     {% if form.errors %}
         {{ form.errors }}
     {% endif %}
@@ -9,4 +11,5 @@
         {% csrf_token %}
         <button type="submit" >S’inscrire</button>
     </form>
+</div>
 {% endblock content %}

@@ -1,22 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h2>Connexion</h2>
-
-    <!-- Affiche les messages d'erreur ou de succès -->
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-
+<div class="container">
+    <h1>Se Connecter</h1>
+    <br>
     <form method="post">
         {{ form.as_p }}
         {% csrf_token %}
-        <button type="submit">Se connecter</button>
+        <button type="submit" >Se connecter</button>
     </form>
-
     <p>Pas encore membre ? <a href="{% url 'signup' %}">Inscrivez-vous maintenant !</a></p>
+</div>
 {% endblock %}

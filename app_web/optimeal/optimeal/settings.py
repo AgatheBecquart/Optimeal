@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Configuration de sécurité
 SECRET_KEY = os.getenv('SECRET_KEY', 'votre-cle-secrete-defaut')
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0', 'optimeal-web-app.francecentral.azurecontainer.io']
 ENCODED_JWT = os.getenv('ENCODED_JWT', 'votre-cle-secrete-defaut')
 
 
@@ -68,7 +68,7 @@ DATABASES = {
         'USER': os.getenv('AZUREUSER'),
         'PASSWORD': os.getenv('PASSWORD'),
         'HOST': os.getenv('SERVER'),
-        'PORT': '',  # Par défaut, SQL Server utilise le port 1433
+        'PORT': '1433',  # Par défaut, SQL Server utilise le port 1433
         'OPTIONS': {
             'driver': 'ODBC Driver 17 for SQL Server',
             'extra_params': 'TrustServerCertificate=yes;',  # Utilisé si SSL est requis sans certificat valide
@@ -102,7 +102,8 @@ USE_TZ = True
 
 # Fichiers statiques
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [BASE_DIR.joinpath('static/')]
+# STATICFILES_DIRS = [BASE_DIR.joinpath('static/')]
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Configuration par défaut pour les clés primaires
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
