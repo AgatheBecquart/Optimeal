@@ -19,7 +19,7 @@ jobs:
 
     - name: Build and Push Docker Image
       run: |
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/agathe19/app_web ./app_web
+        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/app_web ./app_web
         echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
         docker push ${{ secrets.DOCKERHUB_USERNAME }}/agathe19/app_web:latest
 
