@@ -13,7 +13,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'votre-cle-secrete-defaut')
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0', 'optimeal-web-app.switzerlandnorth.azurecontainer.io']
 ENCODED_JWT = os.getenv('ENCODED_JWT', 'votre-cle-secrete-defaut')
-
+APPLICATIONINSIGHTS_CONNECTION_STRING = os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING', 'votre-cle-secrete-defaut')
 
 # Applications installées
 INSTALLED_APPS = [
