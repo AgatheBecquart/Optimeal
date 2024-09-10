@@ -36,7 +36,7 @@ from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from azure.monitor.opentelemetry.exporter import AzureMonitorTraceExporter
 
 trace_exporter = AzureMonitorTraceExporter(
-    connection_string=APPLICATIONINSIGHTS_CONNECTION_STRING
+    connection_string=os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING')
 )
 resource = Resource(attributes={"cloud.role": "DjangoApplication","service.name":"DjangoApplication"})
 tracer_provider = TracerProvider(resource=resource)
