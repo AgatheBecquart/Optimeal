@@ -16,12 +16,10 @@ jobs:
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
-      
-    - name: Set up environment variables
-      run: echo "APPLICATIONINSIGHTS_CONNECTION_STRING=${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}" >> $GITHUB_ENV
-
 
     - name: Build and Push Docker Image
+      env:
+          APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}
       run: |
         docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/app_web ./app_web/optimeal
         echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
@@ -68,4 +66,3 @@ jobs:
     - name: Test Endpoint
       run: curl -I ${{ inputs.app_name }}.switzerlandnorth.azurecontainer.io:8000/
       
-#
