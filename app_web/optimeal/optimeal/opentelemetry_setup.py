@@ -14,6 +14,8 @@ from azure.monitor.opentelemetry.exporter import AzureMonitorLogExporter
 
 exporter = AzureMonitorLogExporter(
     connection_string=APPLICATIONINSIGHTS_CONNECTION_STRING
+    print(connection_string)
+    print("rien")
 )
 
 logger_provider = LoggerProvider()
