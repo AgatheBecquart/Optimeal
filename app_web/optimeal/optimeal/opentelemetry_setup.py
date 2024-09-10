@@ -13,7 +13,7 @@ from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
 from azure.monitor.opentelemetry.exporter import AzureMonitorLogExporter
 
 exporter = AzureMonitorLogExporter(
-    connection_string='InstrumentationKey=a41f17e4-96e4-4935-8f7c-6f66bdd90dcb;IngestionEndpoint=https://switzerlandnorth-0.in.applicationinsights.azure.com/;LiveEndpoint=https://switzerlandnorth.livediagnostics.monitor.azure.com/;ApplicationId=450f12bb-0425-479c-b195-e957f9818679'
+    connection_string=APPLICATIONINSIGHTS_CONNECTION_STRING
 )
 
 logger_provider = LoggerProvider()
@@ -36,7 +36,7 @@ from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from azure.monitor.opentelemetry.exporter import AzureMonitorTraceExporter
 
 trace_exporter = AzureMonitorTraceExporter(
-    connection_string=os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING')
+    connection_string=APPLICATIONINSIGHTS_CONNECTION_STRING
 )
 resource = Resource(attributes={"cloud.role": "DjangoApplication","service.name":"DjangoApplication"})
 tracer_provider = TracerProvider(resource=resource)
