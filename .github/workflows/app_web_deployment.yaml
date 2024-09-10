@@ -64,6 +64,7 @@ jobs:
             "TOKEN"=${{ secrets.TOKEN }} \
             "APP_NAME"=${{ secrets.APP_NAME }} \
             "APPLICATIONINSIGHTS_CONNECTION_STRING"=${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }} \
+            "MONITORING"='True' 
             echo "Container instance created."
 
     - name: Test Endpoint
