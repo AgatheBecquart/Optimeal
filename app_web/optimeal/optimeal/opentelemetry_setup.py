@@ -2,6 +2,7 @@
 from dotenv import load_dotenv
 import os
 load_dotenv()
+APPLICATIONINSIGHTS_CONNECTION_STRING=os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING')
 
 
 # PART 1 : SET UP LOGGING EXPORTER
@@ -11,11 +12,9 @@ from opentelemetry._logs import set_logger_provider
 from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
 from azure.monitor.opentelemetry.exporter import AzureMonitorLogExporter
 
-connection_string = os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING')
-if not connection_string:
-    raise ValueError("Instrumentation key or connection string cannot be none or empty.")
-
-exporter = AzureMonitorLogExporter(connection_string=connection_string)
+exporter = AzureMonitorLogExporter(
+    connection_string=APPLICATIONINSIGHTS_CONNECTION_STRING
+)
 
 logger_provider = LoggerProvider()
 set_logger_provider(logger_provider)
@@ -36,11 +35,9 @@ from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor
 from azure.monitor.opentelemetry.exporter import AzureMonitorTraceExporter
 
-connection_string = os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING')
-if not connection_string:
-    raise ValueError("Instrumentation key or connection string cannot be none or empty.")
-
-trace_exporter = AzureMonitorTraceExporter(connection_string=connection_string)
+trace_exporter = AzureMonitorTraceExporter(
+    connection_string=APPLICATIONINSIGHTS_CONNECTION_STRING
+)
 resource = Resource(attributes={"cloud.role": "DjangoApplication","service.name":"DjangoApplication"})
 tracer_provider = TracerProvider(resource=resource)
 tracer_provider.add_span_processor(BatchSpanProcessor(trace_exporter))
@@ -64,11 +61,9 @@ from opentelemetry.sdk.metrics import MeterProvider
 from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
 from azure.monitor.opentelemetry.exporter import AzureMonitorMetricExporter
 
-connection_string = os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING')
-if not connection_string:
-    raise ValueError("Instrumentation key or connection string cannot be none or empty.")
-
-metric_exporter = AzureMonitorMetricExporter(connection_string=connection_string)
+metric_exporter = AzureMonitorMetricExporter(
+    connection_string=APPLICATIONINSIGHTS_CONNECTION_STRING
+)
 
 frequency_millis = 60000 #min
 reader = PeriodicExportingMetricReader(exporter=metric_exporter, export_interval_millis=frequency_millis)
@@ -77,5 +72,4 @@ meter = metrics.get_meter_provider().get_meter("satisfaction_metrics")
 
 # Create metric instruments
 prediction_counter_per_minute = meter.create_counter("prediction_counter_per_minute")
-
 
