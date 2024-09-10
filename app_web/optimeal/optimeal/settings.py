@@ -118,7 +118,7 @@ LOGOUT_REDIRECT_URL = LOGIN_URL
 
 # # Monitoring
 
-MONITORING = os.getenv('MONITORING', default='False')
+MONITORING = os.getenv('MONITORING', default=False)
 
-if MONITORING == 'True':
+if MONITORING :
     import optimeal.opentelemetry_setup
