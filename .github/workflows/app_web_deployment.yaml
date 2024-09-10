@@ -58,6 +58,8 @@ jobs:
             --environment-variables \
             "TOKEN"=${{ secrets.TOKEN }} \
             "APP_NAME"=${{ secrets.APP_NAME }} \
+            "APPLICATIONINSIGHTS_CONNECTION_STRING"=${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }} \
+            echo "Container instance created."
 
     - name: Test Endpoint
       run: curl -I ${{ inputs.app_name }}.switzerlandnorth.azurecontainer.io:8000/
