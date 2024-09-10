@@ -55,7 +55,7 @@ jobs:
             --ip-address public \
             --dns-name-label ${{ inputs.app_name }} \
             --ports 8000 \
-            --environment-variables \
+            --secure-environment-variables \
             "TOKEN"=${{ secrets.TOKEN }} \
             "APP_NAME"=${{ secrets.APP_NAME }} \
             "APPLICATIONINSIGHTS_CONNECTION_STRING"=${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }} \
@@ -64,3 +64,4 @@ jobs:
     - name: Test Endpoint
       run: curl -I ${{ inputs.app_name }}.switzerlandnorth.azurecontainer.io:8000/
       
+#
