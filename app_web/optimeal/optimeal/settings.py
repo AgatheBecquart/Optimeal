@@ -134,7 +134,7 @@ if MONITORING == 'True':
     from opentelemetry.sdk._logs.export import BatchLogRecordProcessor
     from azure.monitor.opentelemetry.exporter import AzureMonitorLogExporter
 
-    connection_string = os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING')
+    connection_string = APPLICATIONINSIGHTS_CONNECTION_STRING
     if not connection_string:
         raise ValueError("Instrumentation key or connection string cannot be none or empty.")
 
@@ -159,7 +159,7 @@ if MONITORING == 'True':
     from opentelemetry.sdk.trace.export import BatchSpanProcessor
     from azure.monitor.opentelemetry.exporter import AzureMonitorTraceExporter
 
-    connection_string = os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING')
+    connection_string = APPLICATIONINSIGHTS_CONNECTION_STRING
     if not connection_string:
         raise ValueError("Instrumentation key or connection string cannot be none or empty.")
 
@@ -187,7 +187,7 @@ if MONITORING == 'True':
     from opentelemetry.sdk.metrics.export import PeriodicExportingMetricReader
     from azure.monitor.opentelemetry.exporter import AzureMonitorMetricExporter
 
-    connection_string = os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING')
+    connection_string = APPLICATIONINSIGHTS_CONNECTION_STRING
     if not connection_string:
         raise ValueError("Instrumentation key or connection string cannot be none or empty.")
 
