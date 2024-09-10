@@ -122,3 +122,4 @@ MONITORING = os.getenv('MONITORING', default='True')
 
 if MONITORING == 'True':
     import optimeal.opentelemetry_setup
+    print(APPLICATIONINSIGHTS_CONNECTION_STRING)
