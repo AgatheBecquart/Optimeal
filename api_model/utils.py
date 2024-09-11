@@ -9,10 +9,8 @@ from datetime import datetime
 
 async def has_access(credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer())):
     token = credentials.credentials
-    print(f"Token received: {token}")
     load_dotenv()
     SECRET_KEY = os.environ.get("SECRET_KEY")
-    print("DEBUG: SECRET_KEY =", repr(SECRET_KEY))  # Affichez la clé secrète à des fins de débogage
     ALGORITHM = "HS256"
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
