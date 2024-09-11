@@ -65,7 +65,7 @@ jobs:
             "WORKSPACE_NAME"=${{ secrets.WORKSPACE_NAME }} \
             "RESOURCE_GROUP"=${{ secrets.RESOURCE_GROUP }}  \
             "SUBSCRIPTION_ID"=${{ secrets.SUBSCRIPTION_ID }} \
-            "APPLICATIONINSIGHTS_CONNECTION_STRING"=${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }} \
+            "APPLICATIONINSIGHTS_CONNECTION_STRING"=${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }} 
             echo "Container instance created."
 
     - name: Test Endpoint
