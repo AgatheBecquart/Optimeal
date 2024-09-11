@@ -6,7 +6,7 @@ on:
       - main  
     paths:
       - 'api_data/**'
-      - '.github/workflows/api_date_continuous_deployment.yaml'
+      - '.github/workflows/api_data_continuous_deployment.yaml'
 
 jobs:
   health-check-job:
