@@ -10,14 +10,14 @@ on:
 
 jobs:
   health-check-job:
-    uses: AgatheBecquart/Optimeal/.github/workflows/api_data_continuous_integration.yaml
+    uses: ./.github/workflows/api_data_continuous_integration.yaml
     secrets: inherit
 
   build-and-deploy:
     needs: [health-check-job]
-    uses: AgatheBecquart/Optimeal/.github/workflows/api_data_deployment.yaml
+    uses: ./.github/workflows/api_data_deployment.yaml
     with:
-      app_name: optimeal-data
+        app_name: optimeal-data
     secrets: inherit
-  
-#commen
+    
+#comment
