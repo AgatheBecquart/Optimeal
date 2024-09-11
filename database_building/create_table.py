@@ -4,6 +4,7 @@ import os
 import csv
 from datetime import datetime
 import requests
+import time
 
 # Charger les variables d'environnement à partir du fichier .env
 load_dotenv()
@@ -64,7 +65,7 @@ try:
     sql_commands = [
         "CREATE TABLE Meteo (id_jour DATE PRIMARY KEY, temperature FLOAT);",
         "CREATE TABLE RepasVendus (id_jour DATE PRIMARY KEY, nb_couvert INTEGER);",
-        "CREATE TABLE PresenceRH (id_agent_anonymise INT, date_demi_j DATETIME, id_motif INT, lib_motif TEXT, type_presence TEXT, origine TEXT, date_traitement DATE);"
+        "CREATE TABLE PresenceRH (id_agent_anonymise INT, date_demi_j DATETIME, id_motif INT, lib_motif TEXT, type_presence TEXT, origine TEXT, date_traitement DATE, date_j DATE);"
     ]
     
     # Exécuter chaque commande SQL pour créer les tables
@@ -87,7 +88,7 @@ try:
     # Insérer des données depuis les fichiers CSV dans les tables
     csv_files = {
         'RepasVendus': 'data/Passage_Journalier_Passage_API.csv',
-        'PresenceRH': 'data/df_olga.csv'
+        'PresenceRH': 'data/df_presence_rh.csv'
     }
     
     # Créer un dictionnaire pour mapper les anciens identifiants aux nouveaux identifiants anonymisés
@@ -95,10 +96,10 @@ try:
     
     for table, file_path in csv_files.items():
         with open(file_path, newline='') as csvfile:
-            if table == 'RepasVendus' or table == 'PresenceRH':
-                csv_reader = csv.reader(csvfile, delimiter=';')  # Spécifier le point-virgule comme délimiteur
-            else:
+            if table == 'Meteo' or table == 'PresenceRH':
                 csv_reader = csv.reader(csvfile)  # Utiliser le délimiteur par défaut
+            else:
+                csv_reader = csv.reader(csvfile, delimiter=';')  # Spécifier le point-virgule comme délimiteurz
             next(csv_reader)  # Ignorer l'en-tête si nécessaire
             for row in csv_reader:
                 print(row)
@@ -124,7 +125,11 @@ try:
                         # Remplacer les valeurs dans la liste row avec les valeurs converties
                         row[1] = date_time_obj
                         row[6] = date_str_2
-                        cursor.execute(f"INSERT INTO {table} VALUES (?, ?, ?, ?, ?, ?, ?)", row)
+                        cursor.execute(f"INSERT INTO {table} VALUES (?, ?, ?, ?, ?, ?, ?, ?)", row)
+                        
+                        # Attendre 1 seconde avant l'insertion suivante
+                        time.sleep(0.1)
+
                 except Exception as e:
                     print(f"Une erreur s'est produite lors de l'insertion de données dans la table {table}")
                     print(f"Erreur : {e}")

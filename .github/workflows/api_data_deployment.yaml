@@ -1,73 +1,72 @@
 name: API Data Docker-deployment
 
 on:
-    workflow_call:
-        inputs:
-            app_name:  
-                required: true
-                type: string
+  workflow_call:
+    inputs:
+      app_name:  
+        required: true
+        type: string
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+  runs-on: ubuntu-latest
+  steps:
+  - name: Checkout repository
+    uses: actions/checkout@v2
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
+  - name: Set up Docker Buildx
+    uses: docker/setup-buildx-action@v1
 
-    - name: Build and Push Docker Image
-      run: |
-        docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/api_data:latest ./api_data
-        echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
-        docker push ${{ secrets.DOCKERHUB_USERNAME }}/api_data:latest
+  - name: Build and Push Docker Image
+    run: |
+      docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/api_data:latest ./api_data
+      echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u ${{ secrets.DOCKERHUB_USERNAME }} --password-stdin
+      docker push ${{ secrets.DOCKERHUB_USERNAME }}/api_data:latest
 
-    - name: Azure Login
-      uses: azure/login@v1
-      with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
-        
-    - name: Create Azure Container Instance
-      uses: azure/CLI@v2
-      with:
-        azcliversion: 2.61.0
-        inlineScript: |
-          az account set --subscription ${{ secrets.SUBSCRIPTION_ID }}
-          
-          # Check if the container exists
-          container_exists=$(az container show --resource-group ${{ secrets.RESOURCE_GROUP }} --name ${{ inputs.app_name }} --query "name" -o tsv || echo "notfound")
+  - name: Azure Login
+    uses: azure/login@v1
+    with:
+    creds: ${{ secrets.AZURE_CREDENTIALS }}
     
-          if [ "$container_exists" != "notfound" ]; then
-            echo "Container instance exists. Deleting..."
-            az container delete --resource-group ${{ secrets.RESOURCE_GROUP }} --name ${{ inputs.app_name }} --yes
-            echo "Container instance deleted."
-          else
-            echo "Container instance does not exist."
-          fi
-    
-          az container create \
-            --resource-group ${{ secrets.RESOURCE_GROUP }} \
-            --name ${{ inputs.app_name }} \
-            --image ${{ secrets.DOCKERHUB_USERNAME }}/api_data:latest \
-            --cpu 1 \
-            --memory 1 \
-            --ip-address public \
-            --dns-name-label ${{ inputs.app_name }} \
-            --ports 80 8000 \
-            --secure-environment-variables \
-            "ENV"=${{ secrets.ENV }} \
-            "SERVER"=${{ secrets.SERVER }} \
-            "PASSWORD"=${{ secrets.PASSWORD }} \
-            "DATABASE"=${{ secrets.DATABASE }}  \
-            "AZUREUSER"=${{ secrets.AZUREUSER }}  \
-            "SECRET_KEY"=${{ secrets.SECRET_KEY }} \
-            "WORKSPACE_NAME"=${{ secrets.WORKSPACE_NAME }} \
-            "RESOURCE_GROUP"=${{ secrets.RESOURCE_GROUP }}  \
-            "SUBSCRIPTION_ID"=${{ secrets.SUBSCRIPTION_ID }} \
-            "APPLICATIONINSIGHTS_CONNECTION_STRING"=${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }} \
-            echo "Container instance created."
+  - name: Create Azure Container Instance
+    uses: azure/CLI@v2
+    with:
+    azcliversion: 2.61.0
+    inlineScript: |
+      az account set --subscription ${{ secrets.SUBSCRIPTION_ID }}
+      
+      # Check if the container exists
+      container_exists=$(az container show --resource-group ${{ secrets.RESOURCE_GROUP }} --name ${{ inputs.app_name }} --query "name" -o tsv || echo "notfound")
+  
+      if [ "$container_exists" != "notfound" ]; then
+      echo "Container instance exists. Deleting..."
+      az container delete --resource-group ${{ secrets.RESOURCE_GROUP }} --name ${{ inputs.app_name }} --yes
+      echo "Container instance deleted."
+      else
+      echo "Container instance does not exist."
+      fi
+  
+      az container create \
+      --resource-group ${{ secrets.RESOURCE_GROUP }} \
+      --name ${{ inputs.app_name }} \
+      --image ${{ secrets.DOCKERHUB_USERNAME }}/api_data:latest \
+      --cpu 1 \
+      --memory 1 \
+      --ip-address public \
+      --dns-name-label ${{ inputs.app_name }} \
+      --ports 80 8000 \
+      --secure-environment-variables \
+      "ENV=${{ secrets.ENV }}" \
+      "SERVER=${{ secrets.SERVER }}" \
+      "PASSWORD=${{ secrets.PASSWORD }}" \
+      "DATABASE=${{ secrets.DATABASE }}"  \
+      "AZUREUSER=${{ secrets.AZUREUSER }}"  \
+      "SECRET_KEY=${{ secrets.SECRET_KEY }}" \
+      "WORKSPACE_NAME=${{ secrets.WORKSPACE_NAME }}" \
+      "RESOURCE_GROUP=${{ secrets.RESOURCE_GROUP }}"  \
+      "SUBSCRIPTION_ID=${{ secrets.SUBSCRIPTION_ID }}" \
+      "APPLICATIONINSIGHTS_CONNECTION_STRING=${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}"
+      echo "Container instance created."
 
-    - name: Test Endpoint
-      run: curl -I ${{ inputs.app_name }}.switzerlandnorth.azurecontainer.io:8000/docs
-#
+  - name: Test Endpoint
+    run: curl -I ${{ inputs.app_name }}.switzerlandnorth.azurecontainer.io:8000/docs
