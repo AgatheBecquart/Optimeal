@@ -4,12 +4,54 @@
     <h1>Inscription</h1>
     <br>
     {% if form.errors %}
-        {{ form.errors }}
+        <div class="alert alert-danger">
+            {{ form.errors }}
+        </div>
     {% endif %}
-    <form method="post">
-        {{ form.as_p }}
+    
+    <form method="post" class="form">
         {% csrf_token %}
-        <button type="submit" >S’inscrire</button>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                {{ form.employee_username.label_tag }}
+                {{ form.employee_username }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.employee_password.label_tag }}
+                {{ form.employee_password }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                {{ form.employee_email.label_tag }}
+                {{ form.employee_email }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.employee_first_name.label_tag }}
+                {{ form.employee_first_name }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                {{ form.employee_last_name.label_tag }}
+                {{ form.employee_last_name }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.employee_zip_code_prefix.label_tag }}
+                {{ form.employee_zip_code_prefix }}
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                {{ form.employee_city.label_tag }}
+                {{ form.employee_city }}
+            </div>
+            <div class="form-group col-md-6">
+                {{ form.employee_state.label_tag }}
+                {{ form.employee_state }}
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">S’inscrire</button>
     </form>
 </div>
 {% endblock content %}

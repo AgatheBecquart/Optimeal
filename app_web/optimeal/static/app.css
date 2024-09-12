@@ -1,54 +1,42 @@
+/* Style global */
 html {
-    font-family: 'Times New Roman', Times, serif;
+    font-family: 'Arial', sans-serif;
 }
 
-body{
+body {
     text-align: center;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
 }
 
-main{
-    min-height: 750px;    
-    margin-top: 3%;
-
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
 }
 
-.post-it {
-    background-color: #d3e0dc; /* couleur de fond */
-    color: black; /* couleur du texte */
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* effet d'ombre */
-    margin: 20px;
+/* Style pour les en-têtes */
+header {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 0;
 }
 
-.post-it a {
-    color : black;
-    text-decoration: none;
+header .nav-pills .nav-link {
+    color: white;
 }
 
-.italic {
-    font-style: italic;
+header .nav-pills .nav-link.active {
+    background-color: #45a049;
 }
 
-#post-it {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-}
-
-ul{
-    list-style: none;
-}
-
-#entete a{
-    color: black;
-    --bs-nav-pills-link-active-bg : rgb(178, 201, 220);
-} 
-
+/* Style pour les formulaires */
 form {
-    background-color: #f7f7f7; /* couleur de fond */
+    background-color: #ffffff;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* effet d'ombre */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 50%;
     margin: auto;
 }
@@ -57,14 +45,13 @@ input[type="text"], input[type="password"], input[type="email"], textarea {
     margin-bottom: 10px;
     padding: 10px;
     border-radius: 5px;
-    border: none;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1); /* effet d'ombre */
+    border: 1px solid #ccc;
     width: 100%;
 }
 
 button[type="submit"] {
-    background-color: #9c9fa1; /* couleur de fond du bouton */
-    color: #fff; /* couleur du texte du bouton */
+    background-color: #4CAF50;
+    color: white;
     border: none;
     border-radius: 5px;
     padding: 10px 20px;
@@ -72,14 +59,65 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-    background-color: #71a0d3; /* couleur de fond du bouton au survol */
+    background-color: #45a049;
 }
 
-#gif-container {
+/* Style pour les messages d'erreur */
+.error {
+    color: red;
+    font-weight: bold;
+}
+
+/* Style pour les tableaux */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+/* Style pour les boutons */
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+/* Style pour les liens */
+a {
+    color: #4CAF50;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Style pour le pied de page */
+footer {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 0;
     position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 1000;
-  }
-  
+    width: 100%;
+    bottom: 0;
+}

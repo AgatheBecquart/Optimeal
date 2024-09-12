@@ -5,6 +5,7 @@ import csv
 from datetime import datetime
 import requests
 import time
+from dateutil import parser
 
 # Charger les variables d'environnement à partir du fichier .env
 load_dotenv()
@@ -117,16 +118,19 @@ try:
                             id_mapping[old_id_agent] = anonymized_id_agent
                         # Utiliser le nouvel identifiant anonymisé
                         row[0] = anonymized_id_agent
-                        # Convertir la chaîne de date et heure en un objet datetime
-                        date_time_str = row[1]
-                        date_time_obj = datetime.strptime(date_time_str, '%d/%m/%Y %H:%M:%S,%f')
+                        # Supposons que row[1] = '14:00:00'
+                        row[1] = datetime.strptime(row[1], '%H:%M:%S').time()
                         # Convertir la date de la sixième colonne au format attendu par la base de données
                         date_str_2 = datetime.strptime(row[6], '%d/%m/%Y').strftime('%Y-%m-%d')
                         # Remplacer les valeurs dans la liste row avec les valeurs converties
-                        row[1] = date_time_obj
                         row[6] = date_str_2
+                        # Convertir la date de la sixième colonne au format attendu par la base de données
+                        date_str_3 = datetime.strptime(row[7], '%d/%m/%Y').strftime('%Y-%m-%d')
+                        # Remplacer les valeurs dans la liste row avec les valeurs converties
+                        row[7] = date_str_3
+
                         cursor.execute(f"INSERT INTO {table} VALUES (?, ?, ?, ?, ?, ?, ?, ?)", row)
-                        
+                       
                         # Attendre 1 seconde avant l'insertion suivante
                         time.sleep(0.1)
 

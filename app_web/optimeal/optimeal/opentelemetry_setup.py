@@ -2,8 +2,7 @@
 from dotenv import load_dotenv
 import os
 load_dotenv()
-APPLICATIONINSIGHTS_CONNECTION_STRING=os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING', 'a41f17e4-dfsd-4935-8f7c-dfsdfsd;IngestionEndpoint=https://switzerlandnorth-0.in.applicationinsights.azure.com/;LiveEndpoint=https://switzerlandnorth.livediagnostics.monitor.azure.com/;ApplicationId=450f12bb-0425-479c-b195-dfsgsfgds')
-
+APPLICATIONINSIGHTS_CONNECTION_STRING=os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING')
 
 # PART 1 : SET UP LOGGING EXPORTER
 import logging
@@ -72,4 +71,3 @@ meter = metrics.get_meter_provider().get_meter("satisfaction_metrics")
 
 # Create metric instruments
 prediction_counter_per_minute = meter.create_counter("prediction_counter_per_minute")
-

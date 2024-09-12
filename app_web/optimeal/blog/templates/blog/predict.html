@@ -15,9 +15,16 @@
         <button type="submit">Prédire</button>
     </form>
 
+    {% if temperature %}
+        <div>
+            <h3>Température pour {{ form.id_jour.value }}: {{ temperature }}°C</h3>
+        </div>
+    {% endif %}
+    
     {% if result %}
-        <h2>Résultat de la prédiction</h2>
-        <p>Prédiction: {{ result.prediction }}</p>
+        <div>
+            <h3>Résultat de la prédiction: {{ result.prediction }}</h3>
+        </div>
     {% endif %}
 
 </div>
