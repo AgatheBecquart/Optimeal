@@ -1,4 +1,4 @@
-from utils import connect_to_database
+from model.utils import connect_to_database
 import requests
 import pandas as pd
 

@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Define your Python script and its parameters
-run_name="poetry_run"
-start_date="2017-01-01"
-end_date="2018-01-01"
+run_name="test_run"
+start_date="2023-01-01"
+end_date="2024-03-01"
 
 # Run the Python script with parameters
 python -m model.main $run_name $start_date $end_date 

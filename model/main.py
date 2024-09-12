@@ -1,4 +1,4 @@
-from training import training
+from model.training import training
 
 # your_python_script.py
 

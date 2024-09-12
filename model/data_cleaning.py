@@ -1,5 +1,5 @@
 import pandas as pd
-from utils import connect_to_database
+from model.utils import connect_to_database
 
 
 def data_cleaning(connection, run_name, start_date="2023-01-01", end_date="2024-03-01"):

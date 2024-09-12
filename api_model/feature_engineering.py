@@ -34,6 +34,10 @@ def feature_engineering(df, expected_columns=None):
     for vac in vacances_types:
         df[f'Vacances_{vac}'] = 0
 
+    # Convertir les colonnes de date des vacances en datetime si nécessaire
+    vacances_df['start_date'] = pd.to_datetime(vacances_df['start_date']).dt.strftime('%Y-%m-%d')
+    vacances_df['end_date'] = pd.to_datetime(vacances_df['end_date']).dt.strftime('%Y-%m-%d')
+
     # Marquer les jours de chaque période de vacances avec la valeur 1
     for _, row in vacances_df.iterrows():
         vac_column = f'Vacances_{row["description"]}'
