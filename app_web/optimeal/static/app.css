@@ -1,85 +1,47 @@
-/* Style global */
-html {
-    font-family: 'Arial', sans-serif;
-    height: 100%;
-}
-
 body {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    background-color: #f8f9fa;
+    font-family: 'Arial', sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
 }
 
-.container {
-    max-width: 1200px;
-    margin: auto;
-    padding: 20px;
+.navbar {
+    background-color: #004494 !important;
 }
 
-/* Style pour le header */
-header {
-    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+.navbar-light .navbar-nav .nav-link {
+    color: #ffffff;
 }
 
-.navbar-brand img {
-    max-height: 40px;
+.navbar-light .navbar-brand {
+    color: #ffffff;
 }
 
-/* Style pour le contenu principal */
-main {
-    flex: 1 0 auto;
-    padding-top: 70px; /* Pour compenser la navbar fixe */
-}
-
-/* Style pour les formulaires */
-form {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Style pour les boutons */
 .btn-primary {
-    background-color: #4CAF50;
-    border-color: #4CAF50;
+    background-color: #004494;
+    border-color: #004494;
 }
 
 .btn-primary:hover {
-    background-color: #45a049;
-    border-color: #45a049;
+    background-color: #003371;
+    border-color: #003371;
 }
 
-/* Style pour les cartes */
 .card {
     border: none;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.card-header {
-    background-color: #4CAF50;
-    color: white;
+.alert-success {
+    background-color: #e6f3e6;
+    border-color: #c3e6cb;
+    color: #155724;
 }
 
-/* Style pour le footer */
 .footer {
-    background-color: #f8f9fa;
-    padding: 20px 0;
-    margin-top: auto;
+    background-color: #004494;
+    color: #ffffff;
 }
 
-/* Style pour l'avatar */
-.avatar-dropdown img {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-    .navbar-nav {
-        flex-direction: column;
-    }
+.footer a {
+    color: #ffffff;
 }

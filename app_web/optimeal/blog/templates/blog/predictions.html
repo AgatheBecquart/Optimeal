@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Mes Prédictions</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Date de la prédiction</th>
+            <th>Date du jour prédit</th>
+            <th>Prédiction</th>
+            <th>Température</th>
+            <th>Nombre de présences sur site</th>
+            <th>Modèle utilisé</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for prediction in predictions %}
+        <tr>
+            <td>{{ prediction.timestamp }}</td>
+            <td>{{ prediction.id_jour }}</td>
+            <td>{{ prediction.prediction }}</td>
+            <td>{{ prediction.temperature }}°C</td>
+            <td>{{ prediction.nb_presence_sur_site }}</td>
+            <td>{{ prediction.model }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

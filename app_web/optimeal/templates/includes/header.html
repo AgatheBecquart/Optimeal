@@ -1,9 +1,9 @@
 {% load static %}
 
-<header class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+<header class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
   <div class="container">
     <a class="navbar-brand" href="{% url 'home' %}">
-      <img src="{% static 'images/default_profile.png' %}" alt="OptiMeal Logo" height="30">
+      <i class="fas fa-university fa-2x text-primary"></i> OptiMeal BPN
     </a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -11,14 +11,14 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link {% if request.path == url_home %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
+          <a class="nav-link {% if request.path == url_home %}active{% endif %}" href="{% url 'home' %}"><i class="fas fa-home"></i> Accueil</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link {% if request.path == url_predict_view %}active{% endif %}" href="{% url 'predict_view' %}">Faire une prédiction</a>
+          <a class="nav-link {% if request.path == url_predict_view %}active{% endif %}" href="{% url 'predict_view' %}"><i class="fas fa-chart-line"></i> Prédiction</a>
         </li>
         {% if user.is_authenticated %}
         <li class="nav-item">
-          <a class="nav-link {% if request.path == url_predict_view %}active{% endif %}" href="{% url 'predict_view' %}">Mes prédictions</a>
+          <a class="nav-link {% if request.path == url_predictions %}active{% endif %}" href="{% url 'predictions' %}"><i class="fas fa-history"></i> Historique</a>
         </li>
         {% endif %}
       </ul>
@@ -26,18 +26,18 @@
         {% if user.is_authenticated %}
         <div class="dropdown">
           <a href="#" class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="{% static 'img/avatar.png' %}" alt="Avatar" width="32" height="32" class="rounded-circle me-2">
+            <i class="fas fa-user-circle fa-2x me-2"></i>
             <span>{{ user.username }}</span>
           </a>
           <ul class="dropdown-menu dropdown-menu-end text-small" aria-labelledby="dropdownUser1">
-            <li><a class="dropdown-item" href="{% url 'profile' %}">Profil</a></li>
+            <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="fas fa-id-card"></i> Profil</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="{% url 'logout' %}">Se déconnecter</a></li>
+            <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fas fa-sign-out-alt"></i> Se déconnecter</a></li>
           </ul>
         </div>
         {% else %}
-        <a href="{% url 'login' %}" class="btn btn-outline-primary me-2">Se connecter</a>
-        <a href="{% url 'signup' %}" class="btn btn-primary">S'inscrire</a>
+        <a href="{% url 'login' %}" class="btn btn-outline-primary me-2"><i class="fas fa-sign-in-alt"></i> Se connecter</a>
+        <a href="{% url 'signup' %}" class="btn btn-primary"><i class="fas fa-user-plus"></i> S'inscrire</a>
         {% endif %}
       </div>
     </div>
