@@ -19,4 +19,4 @@ jobs:
     with:
         app_name: optimeal-data
     secrets: inherit
-            
+              
