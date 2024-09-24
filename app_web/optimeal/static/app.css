@@ -1,13 +1,14 @@
 /* Style global */
 html {
     font-family: 'Arial', sans-serif;
+    height: 100%;
 }
 
 body {
-    text-align: center;
-    background-color: #f4f4f9;
-    margin: 0;
-    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f8f9fa;
 }
 
 .container {
@@ -16,19 +17,19 @@ body {
     padding: 20px;
 }
 
-/* Style pour les en-têtes */
+/* Style pour le header */
 header {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
 }
 
-header .nav-pills .nav-link {
-    color: white;
+.navbar-brand img {
+    max-height: 40px;
 }
 
-header .nav-pills .nav-link.active {
-    background-color: #45a049;
+/* Style pour le contenu principal */
+main {
+    flex: 1 0 auto;
+    padding-top: 70px; /* Pour compenser la navbar fixe */
 }
 
 /* Style pour les formulaires */
@@ -37,87 +38,48 @@ form {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 50%;
-    margin: auto;
-}
-
-input[type="text"], input[type="password"], input[type="email"], textarea {
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    width: 100%;
-}
-
-button[type="submit"] {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
-}
-
-button[type="submit"]:hover {
-    background-color: #45a049;
-}
-
-/* Style pour les messages d'erreur */
-.error {
-    color: red;
-    font-weight: bold;
-}
-
-/* Style pour les tableaux */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-}
-
-table, th, td {
-    border: 1px solid #ddd;
-}
-
-th, td {
-    padding: 8px;
-    text-align: left;
-}
-
-th {
-    background-color: #f2f2f2;
 }
 
 /* Style pour les boutons */
-button {
+.btn-primary {
     background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
+    border-color: #4CAF50;
 }
 
-button:hover {
+.btn-primary:hover {
     background-color: #45a049;
+    border-color: #45a049;
 }
 
-/* Style pour les liens */
-a {
-    color: #4CAF50;
-    text-decoration: none;
+/* Style pour les cartes */
+.card {
+    border: none;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-a:hover {
-    text-decoration: underline;
-}
-
-/* Style pour le pied de page */
-footer {
+.card-header {
     background-color: #4CAF50;
     color: white;
-    padding: 10px 0;
-    position: fixed;
-    width: 100%;
-    bottom: 0;
+}
+
+/* Style pour le footer */
+.footer {
+    background-color: #f8f9fa;
+    padding: 20px 0;
+    margin-top: auto;
+}
+
+/* Style pour l'avatar */
+.avatar-dropdown img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .navbar-nav {
+        flex-direction: column;
+    }
 }

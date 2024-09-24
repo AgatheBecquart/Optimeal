@@ -1,16 +1,38 @@
-<div class="container">
-    <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
-      <div class="col-md-4 d-flex align-items-center">
-        <a href="/" class="mb-3 me-2 mb-md-0 text-muted text-decoration-none lh-1">
-          <svg class="bi" width="30" height="24"><use xlink:href="#bootstrap"></use></svg>
-        </a>
-        <span class="mb-3 mb-md-0 text-muted">© 2023, Agathe BECQUART</span>
+{% load static %}
+<footer class="footer mt-auto py-3 bg-light">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <h5>OptiMeal</h5>
+        <p class="text-muted">Optimisez la gestion de votre cantine avec des prédictions précises.</p>
       </div>
-  
-      <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
-        <li class="ms-3"><a class="text-muted" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#twitter"></use></svg></a></li>
-        <li class="ms-3"><a class="text-muted" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#instagram"></use></svg></a></li>
-        <li class="ms-3"><a class="text-muted" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#facebook"></use></svg></a></li>
-      </ul>
-    </footer>
+      <div class="col-md-4">
+        <h5>Liens rapides</h5>
+        <ul class="list-unstyled">
+          <li><a href="{% url 'home' %}" class="text-muted">Accueil</a></li>
+          <li><a href="{% url 'predict_view' %}" class="text-muted">Faire une prédiction</a></li>
+          {% if user.is_authenticated %}
+          <li><a href="{% url 'profile' %}" class="text-muted">Profil</a></li>
+          {% else %}
+          <li><a href="{% url 'login' %}" class="text-muted">Se connecter</a></li>
+          <li><a href="{% url 'signup' %}" class="text-muted">S'inscrire</a></li>
+          {% endif %}
+        </ul>
+      </div>
+      <div class="col-md-4">
+        <h5>Suivez-nous</h5>
+        <ul class="list-inline">
+          <li class="list-inline-item"><a href="#" class="text-muted"><i class="fab fa-facebook-f"></i></a></li>
+          <li class="list-inline-item"><a href="#" class="text-muted"><i class="fab fa-twitter"></i></a></li>
+          <li class="list-inline-item"><a href="#" class="text-muted"><i class="fab fa-instagram"></i></a></li>
+        </ul>
+      </div>
+    </div>
+    <hr>
+    <div class="row">
+      <div class="col-12 text-center">
+        <p class="text-muted">&copy; 2023 OptiMeal. Tous droits réservés.</p>
+      </div>
+    </div>
   </div>
+</footer>

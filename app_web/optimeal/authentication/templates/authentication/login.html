@@ -1,14 +1,32 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<div class="container">
-    <h1>Se Connecter</h1>
-    <br>
-    <form method="post">
-        {{ form.as_p }}
-        {% csrf_token %}
-        <button type="submit" >Se connecter</button>
-    </form>
-    <p>Pas encore membre ? <a href="{% url 'signup' %}">Inscrivez-vous maintenant !</a></p>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">Connexion</h2>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <div class="form-group">
+                                {{ field.label_tag }}
+                                <input type="{{ field.field.widget.input_type }}" 
+                                       name="{{ field.name }}" 
+                                       class="form-control" 
+                                       id="{{ field.id_for_label }}"
+                                       {% if field.field.required %}required{% endif %}>
+                            </div>
+                        {% endfor %}
+                        <button type="submit" class="btn btn-primary btn-block mt-4">Se connecter</button>
+                    </form>
+                    <hr>
+                    <p class="text-center">Pas encore membre ? <a href="{% url 'signup' %}">Inscrivez-vous maintenant !</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

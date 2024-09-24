@@ -1,32 +1,44 @@
 {% extends 'base.html' %}
 {% block content %}
-<!-- predict.html -->
-<div class="container">
-
-    <h1>Faire une prédiction</h1>
+<div class="container mt-5">
+    <h1 class="mb-4">Faire une prédiction</h1>
 
     {% if error %}
-        <p style="color: red;">Erreur: {{ error }}</p>
+        <div class="alert alert-danger" role="alert">
+            Erreur: {{ error }}
+        </div>
     {% endif %}
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Prédire</button>
-    </form>
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="form-group mb-3">
+                        {{ field.label_tag }}
+                        <input type="{{ field.field.widget.input_type }}" 
+                               name="{{ field.name }}" 
+                               id="{{ field.id_for_label }}" 
+                               class="form-control"
+                               {% if field.value %}value="{{ field.value }}"{% endif %}
+                               {% if field.field.required %}required{% endif %}>
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary">Prédire</button>
+            </form>
+        </div>
+    </div>
 
     {% if temperature %}
-        <div>
-            <h3>Température pour {{ form.id_jour.value }}: {{ temperature }}°C</h3>
+        <div class="mt-4 alert alert-info">
+            <h3 class="h5">Température pour {{ form.id_jour.value }}: {{ temperature }}°C</h3>
         </div>
     {% endif %}
     
     {% if result %}
-    <div>
-        <h3>Résultat de la prédiction: {{ result.prediction|floatformat:0 }}</h3>
-    </div>
+        <div class="mt-4 alert alert-success">
+            <h3 class="h5">Résultat de la prédiction: {{ result.prediction|floatformat:0 }} couverts</h3>
+        </div>
     {% endif %}
-
 </div>
-
 {% endblock content %}

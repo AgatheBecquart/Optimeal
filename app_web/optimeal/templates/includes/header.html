@@ -1,42 +1,45 @@
-<div class="container">
-    <header id="entete" class="d-flex justify-content-center py-3">
+{% load static %}
 
-      {% url 'home' as url_home%}
-      {% url 'predict_view' as url_predict_view%}
-      {% url 'idea_list' as url_idea_list%}
-      {% url 'login' as url_login%}
-      {% url 'logout' as url_logout%}
-      {% url 'signup' as url_signup%}
-      
-      <ul class="nav nav-pills">
-
-        <li class="nav-item"><a href="{{url_home}}" 
-          class="nav-link {% if request.path == url_home %}active{% endif %}" 
-          aria-current="page">Accueil</a>
+<header class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="{% url 'home' %}">
+      <img src="{% static 'images/default_profile.png' %}" alt="OptiMeal Logo" height="30">
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == url_home %}active{% endif %}" href="{% url 'home' %}">Accueil</a>
         </li>
-        <li class="nav-item"><a href="{{url_predict_view}}" 
-          class="nav-link {% if request.path == url_idea_create %}active{% endif %}">Faire une prédiction</a>
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == url_predict_view %}active{% endif %}" href="{% url 'predict_view' %}">Faire une prédiction</a>
         </li>
-
         {% if user.is_authenticated %}
-
-        <li class="nav-item"><a href="{{url_my_idea_list}}" 
-          class="nav-link {% if request.path == url_my_idea_list %}active{% endif %}">Mes prédictions</a>
-        </li>
-        {% endif %}
-        -
-        {% if user.is_authenticated %}
-        <li class="nav-item"><a href="{{url_logout}}" 
-          class="nav-link {% if request.path == url_logout %}active{% endif %}">Se déconnecter</a>
-        </li>
-        {% else %}
-        <li class="nav-item"><a href="{{url_login}}" 
-          class="nav-link {% if request.path == url_login %}active{% endif %}">Se connecter</a>
-        </li>
-        <li class="nav-item"><a href="{{url_signup}}" 
-          class="nav-link {% if request.path == url_signup %}active{% endif %}">S'inscrire</a>
+        <li class="nav-item">
+          <a class="nav-link {% if request.path == url_predict_view %}active{% endif %}" href="{% url 'predict_view' %}">Mes prédictions</a>
         </li>
         {% endif %}
       </ul>
-    </header>
-</div>
+      <div class="d-flex align-items-center">
+        {% if user.is_authenticated %}
+        <div class="dropdown">
+          <a href="#" class="d-flex align-items-center text-dark text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+            <img src="{% static 'img/avatar.png' %}" alt="Avatar" width="32" height="32" class="rounded-circle me-2">
+            <span>{{ user.username }}</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end text-small" aria-labelledby="dropdownUser1">
+            <li><a class="dropdown-item" href="{% url 'profile' %}">Profil</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{% url 'logout' %}">Se déconnecter</a></li>
+          </ul>
+        </div>
+        {% else %}
+        <a href="{% url 'login' %}" class="btn btn-outline-primary me-2">Se connecter</a>
+        <a href="{% url 'signup' %}" class="btn btn-primary">S'inscrire</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</header>
