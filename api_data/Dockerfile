@@ -34,7 +34,7 @@ COPY . /app/api_data
 WORKDIR /app/api_data
 
 # Exposer le port de l'application
-EXPOSE 8000
+EXPOSE 8080
 
 # Commande pour démarrer l'application avec Uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
