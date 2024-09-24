@@ -55,7 +55,7 @@ load_dotenv()
 # Endpoint de l'API météo
 URL = "https://public.opendatasoft.com/api/records/1.0/search/"
 resource = "?dataset=donnees-synop-essentielles-omm&q="
-station = f"&refine.nom=ORLY"
+station = f"&refine.nom=LILLE-LESQUIN"
 start_date = '2023-09-01'
 end_date = '2024-12-31'
 row_limit = "&rows=10000"
@@ -144,8 +144,10 @@ def predict_view(request):
                         response.raise_for_status()
                         result = response.json()
 
+                       
                         prediction_value = result.get('prediction', 0)
-                        logger.info(f"Prediction result: {prediction_value}")
+                        rounded_prediction_value = round(prediction_value)
+                        logger.info(f"Prediction result: {rounded_prediction_value}")
                         prediction_counter_per_minute.add(1)
 
                     except requests.exceptions.RequestException as e:

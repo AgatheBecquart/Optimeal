@@ -22,9 +22,9 @@
     {% endif %}
     
     {% if result %}
-        <div>
-            <h3>Résultat de la prédiction: {{ result.prediction }}</h3>
-        </div>
+    <div>
+        <h3>Résultat de la prédiction: {{ result.prediction|floatformat:0 }}</h3>
+    </div>
     {% endif %}
 
 </div>
