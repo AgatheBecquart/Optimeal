@@ -2,10 +2,10 @@ import pyodbc
 from dotenv import load_dotenv
 import os
 import csv
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 import requests
 import time
-from dateutil import parser
+import pytz
 
 # Charger les variables d'environnement à partir du fichier .env
 load_dotenv()
@@ -19,6 +19,10 @@ password = os.getenv("PASSWORD")
 # Chaîne de connexion à la base de données
 conn_str = f'DRIVER=ODBC Driver 17 for SQL Server;SERVER={server};DATABASE={database};UID={user};PWD={password}'
 
+# Coordonnées de Marcq-en-Baroeul
+lat = 50.6788
+lon = 3.0915
+
 # Définir la fonction pour anonymiser les identifiants des agents
 def anonymize_id(id):
     # Utiliser la fonction de hashage pour transformer l'ID en une valeur hash
@@ -29,121 +33,190 @@ def anonymize_id(id):
     anonymized_id = anonymized_id % (10**7)
     return anonymized_id
 
-# Endpoint de l'API météo
-URL = "https://public.opendatasoft.com/api/records/1.0/search/"
-resource = "?dataset=donnees-synop-essentielles-omm&q="
-station = f"&refine.nom=ORLY"
-start_date = '2023-09-01'
-end_date = '2024-02-28'
-row_limit = "&rows=10000"
-
-# Fonction pour récupérer les données météorologiques depuis l'API
-def fetch_weather_data():
-    # Créer l'URL de l'API à partir des dates de début et de fin
-    date_fork = f"date%3A%5B{start_date}+TO+{end_date}%5D"
-    endpoint = URL + resource + date_fork + row_limit + station
-    response = requests.get(endpoint)
+# Convertir une date à 12h en timestamp Unix
+def get_unix_timestamp_for_noon(date_str):
+    # Fuseau horaire de Paris
+    paris_tz = pytz.timezone('Europe/Paris')
     
-    daily_temperatures = []
-    for record in response.json()["records"]:
-        date_time = record["fields"]["date"]  # Extraire la date et l'heure complètes
-        if date_time.endswith("T12:00:00+00:00"):  # Vérifier si l'heure est 12:00:00
-            date = date_time[:10]  # Extraire uniquement la date au format YYYY-MM-DD
-            if "tc" not in record["fields"]:
-                continue  # Passer à l'itération suivante si la clé "tc" n'est pas présente
-            temperature = record["fields"]["tc"]
-            temperature = round(temperature, 1) 
-            daily_temperatures.append({'date': date, 'temperature': temperature})
+    # Créer un objet datetime à 12h de la date donnée
+    date = datetime.strptime(date_str, "%Y-%m-%d")
+    date_noon = date.replace(hour=12, minute=0, second=0)
     
-    return daily_temperatures
+    # Convertir en heure locale (Paris) et en timestamp Unix
+    localized_time = paris_tz.localize(date_noon)
+    return int(localized_time.timestamp())
 
+# Fonction pour récupérer les données météorologiques pour une période donnée
+def get_weather_data_for_period(api_key, start_date_str, end_date_str):
+    start_date = datetime.strptime(start_date_str, "%Y-%m-%d")
+    end_date = datetime.strptime(end_date_str, "%Y-%m-%d")
+    
+    current_date = start_date
+    weather_data = []
+    
+    while current_date <= end_date:
+        # Obtenir le timestamp Unix pour 12h à Marcq-en-Baroeul
+        timestamp = get_unix_timestamp_for_noon(current_date.strftime("%Y-%m-%d"))
+        
+        # Construire l'URL pour la requête API
+        history_url = f"https://api.openweathermap.org/data/3.0/onecall/timemachine?lat={lat}&lon={lon}&dt={timestamp}&appid={api_key}&lang=fr&units=metric"
+        print(f"Fetching data for {current_date.strftime('%Y-%m-%d')} at 12h: {history_url}")
+        
+        # Envoyer la requête à l'API et stocker les résultats
+        response = requests.get(history_url)
+        if response.status_code == 200:
+            weather_data.append(response.json())
+        else:
+            print(f"Erreur lors de la récupération des données météo pour {current_date.strftime('%Y-%m-%d')}")
+        
+        # Passer au jour suivant
+        current_date += timedelta(days=1)
+
+    return weather_data
+
+# Fonction pour insérer les données météo dans la base de données
+def insert_weather_data(cursor, weather_data):
+    # Fuseau horaire de Paris
+    paris_tz = pytz.timezone('Europe/Paris')
+
+    for record in weather_data:
+        try:
+            # Accéder à la liste des données météo sous la clé 'data'
+            for weather in record['data']:
+                # Convertir le timestamp Unix en datetime aware (timezone-aware UTC)
+                timestamp = weather['dt']
+                utc_time = datetime.fromtimestamp(timestamp, tz=timezone.utc)
+
+                # Convertir en heure de Paris
+                paris_time = utc_time.astimezone(paris_tz)
+                date = paris_time.strftime('%Y-%m-%d')
+
+                # Extraire les autres données
+                temp = weather['temp']
+                feels_like = weather['feels_like']
+                pressure = weather['pressure']
+                humidity = weather['humidity']
+                dew_point = weather['dew_point']
+                clouds = weather['clouds']
+                visibility = weather.get('visibility', 10000)  # Par défaut 10000 si non disponible
+                wind_speed = weather['wind_speed']
+                wind_deg = weather['wind_deg']
+                weather_main = weather['weather'][0]['main']
+                weather_description = weather['weather'][0]['description']
+                rain = weather.get('rain', {}).get('1h', 0.0)  # Par défaut 0.0 si pas de pluie
+
+                # Insérer dans la base de données
+                cursor.execute("""
+                    INSERT INTO Meteo (id_jour, temp, feels_like, pressure, humidity, dew_point, clouds, visibility, wind_speed, wind_deg, weather_main, weather_description, rain)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (date, temp, feels_like, pressure, humidity, dew_point, clouds, visibility, wind_speed, wind_deg, weather_main, weather_description, rain))
+
+        except Exception as e:
+            print(f"Erreur lors de l'insertion des données météo pour {date if 'date' in locals() else 'inconnue'} : {e}")
+
+# Fonction pour insérer les données depuis les fichiers CSV
+def insert_csv_data(cursor, csv_files, id_mapping):
+    for table, file_path in csv_files.items():
+        try:
+            with open(file_path, newline='', encoding='utf-8') as csvfile:
+
+                csv_reader = csv.reader(csvfile, delimiter=',')
+                next(csv_reader)  # Passer l'en-tête
+
+                for row in csv_reader:
+                    print(row)
+                    try:
+                        if table == 'RepasVendus':
+                            date_str = datetime.strptime(row[0], '%d/%m/%Y').strftime('%Y-%m-%d')
+                            cursor.execute(f"INSERT INTO {table} (id_jour, nb_couvert) VALUES (?, ?)", (date_str, row[1]))
+                        elif table == 'PresenceRH':
+                            # Anonymiser l'identifiant de l'agent
+                            old_id_agent = row[0]
+                            anonymized_id_agent = id_mapping.get(old_id_agent)
+                            if anonymized_id_agent is None:
+                                anonymized_id_agent = anonymize_id(old_id_agent)
+                                id_mapping[old_id_agent] = anonymized_id_agent
+                            # Utiliser le nouvel identifiant anonymisé
+                            row[0] = anonymized_id_agent
+                            # Convertir les dates et heures
+                            row[6] = datetime.strptime(row[6], '%d/%m/%Y').strftime('%Y-%m-%d')
+                            row[7] = datetime.strptime(row[7], '%d/%m/%Y').strftime('%Y-%m-%d')
+                            cursor.execute(f"INSERT INTO {table} VALUES (?, ?, ?, ?, ?, ?, ?, ?)", row)
+                    except Exception as e:
+                        print(f"Une erreur s'est produite lors de l'insertion de données dans la table {table}")
+                        print(f"Erreur : {e}")
+        except Exception as e:
+            print(f"Erreur lors de l'ouverture du fichier {file_path} : {e}")
+
+# Connexion à la base de données et création des tables
 try:
     conn = pyodbc.connect(conn_str)
     cursor = conn.cursor()
     print("Connexion réussie")
-    
-    # Liste des commandes SQL
+
+    # Création des tables
     sql_commands = [
-        "CREATE TABLE Meteo (id_jour DATE PRIMARY KEY, temperature FLOAT);",
-        "CREATE TABLE RepasVendus (id_jour DATE PRIMARY KEY, nb_couvert INTEGER);",
-        "CREATE TABLE PresenceRH (id_agent_anonymise INT, date_demi_j DATETIME, id_motif INT, lib_motif TEXT, type_presence TEXT, origine TEXT, date_traitement DATE, date_j DATE);"
+        """
+        CREATE TABLE Meteo (
+            id_jour DATE PRIMARY KEY,
+            temp FLOAT,
+            feels_like FLOAT,
+            pressure INT,
+            humidity INT,
+            dew_point FLOAT,
+            clouds INT,
+            visibility INT,
+            wind_speed FLOAT,
+            wind_deg INT,
+            weather_main VARCHAR(50),
+            weather_description VARCHAR(100),
+            rain FLOAT
+        );
+        """,
+        """
+        CREATE TABLE RepasVendus (
+            id_jour DATE PRIMARY KEY,
+            nb_couvert INTEGER
+        );
+        """,
+        """
+        CREATE TABLE PresenceRH (
+            id_agent_anonymise INT,
+            heure DATETIME,
+            id_motif INT,
+            lib_motif TEXT,
+            type_presence TEXT,
+            origine TEXT,
+            date_traitement DATE,
+            date_j DATE
+        );
+        """
     ]
     
-    # Exécuter chaque commande SQL pour créer les tables
     for sql_command in sql_commands:
-        try:
-            cursor.execute(sql_command)
-            conn.commit()  # Valider la transaction
-        except Exception as e:
-            print(f"Une erreur s'est produite lors de l'exécution de la commande SQL : {sql_command}")
-            print(f"Erreur : {e}")
+        cursor.execute(sql_command)
+        conn.commit()
 
-        # Récupérer les données météorologiques depuis l'API
-    daily_temperatures = fetch_weather_data()
+    # Récupérer les données météorologiques
+    api_key = os.getenv("API_KEY")  # Assurez-vous que l'API_KEY est définie dans le fichier .env
+    weather_data = get_weather_data_for_period(api_key, '2023-09-01', '2024-09-28')
     
-    # Insérer les données dans la table Meteo
-    for row in daily_temperatures:
-        print(row)
-        cursor.execute("INSERT INTO Meteo (id_jour, temperature) VALUES (?, ?)", (row['date'], row['temperature']))
+    # Insérer les données météorologiques dans la base de données
+    insert_weather_data(cursor, weather_data)
     
     # Insérer des données depuis les fichiers CSV dans les tables
     csv_files = {
-        'RepasVendus': 'data/Passage_Journalier_Passage_API.csv',
+        'RepasVendus': 'data/df_passage_cantine.csv',
         'PresenceRH': 'data/df_presence_rh.csv'
     }
-    
-    # Créer un dictionnaire pour mapper les anciens identifiants aux nouveaux identifiants anonymisés
     id_mapping = {}
+    insert_csv_data(cursor, csv_files, id_mapping)
     
-    for table, file_path in csv_files.items():
-        with open(file_path, newline='') as csvfile:
-            if table == 'Meteo' or table == 'PresenceRH':
-                csv_reader = csv.reader(csvfile)  # Utiliser le délimiteur par défaut
-            else:
-                csv_reader = csv.reader(csvfile, delimiter=';')  # Spécifier le point-virgule comme délimiteurz
-            next(csv_reader)  # Ignorer l'en-tête si nécessaire
-            for row in csv_reader:
-                print(row)
-                try:
-                    # Exclure la colonne d'identité lors de l'insertion
-                    if table == 'RepasVendus':
-                        date_str = datetime.strptime(row[0], '%d/%m/%Y').strftime('%Y-%m-%d')
-                        cursor.execute(f"INSERT INTO {table} VALUES (?, ?)", (date_str, row[1]))
-                    elif table == 'PresenceRH':
-                        # Anonymiser l'identifiant de l'agent
-                        old_id_agent = row[0]
-                        anonymized_id_agent = id_mapping.get(old_id_agent)
-                        if anonymized_id_agent is None:
-                            anonymized_id_agent = anonymize_id(old_id_agent)
-                            id_mapping[old_id_agent] = anonymized_id_agent
-                        # Utiliser le nouvel identifiant anonymisé
-                        row[0] = anonymized_id_agent
-                        # Supposons que row[1] = '14:00:00'
-                        row[1] = datetime.strptime(row[1], '%H:%M:%S').time()
-                        # Convertir la date de la sixième colonne au format attendu par la base de données
-                        date_str_2 = datetime.strptime(row[6], '%d/%m/%Y').strftime('%Y-%m-%d')
-                        # Remplacer les valeurs dans la liste row avec les valeurs converties
-                        row[6] = date_str_2
-                        # Convertir la date de la sixième colonne au format attendu par la base de données
-                        date_str_3 = datetime.strptime(row[7], '%d/%m/%Y').strftime('%Y-%m-%d')
-                        # Remplacer les valeurs dans la liste row avec les valeurs converties
-                        row[7] = date_str_3
-
-                        cursor.execute(f"INSERT INTO {table} VALUES (?, ?, ?, ?, ?, ?, ?, ?)", row)
-                       
-                        # Attendre 1 seconde avant l'insertion suivante
-                        time.sleep(0.1)
-
-                except Exception as e:
-                    print(f"Une erreur s'est produite lors de l'insertion de données dans la table {table}")
-                    print(f"Erreur : {e}")
-    
-    # Valider la transaction
+    # Valider les transactions
     conn.commit()
     
 finally:
-    # Fermer la connexion à la base de données
-    if 'cursor' in locals():
+    if cursor:
         cursor.close()
-    if 'conn' in locals():
+    if conn:
         conn.close()

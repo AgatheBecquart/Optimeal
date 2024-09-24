@@ -1,14 +1,13 @@
-from model.utils import connect_to_database
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error, mean_squared_log_error
+import mlflow
+import os
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error, r2_score, mean_squared_log_error, mean_absolute_error
-import mlflow
 from dotenv import load_dotenv
-import os
 
 
-def modelisation(connection, run_name, start_date="2023-01-01", end_date="2024-03-01"):
+def modelisation(connection, run_name, start_date, end_date):
 
     # Perform model training and evaluation using linear regression.
 
@@ -38,8 +37,8 @@ def modelisation(connection, run_name, start_date="2023-01-01", end_date="2024-0
     # Séparer les caractéristiques (X) de la variable cible (y)
     X = df.drop(['nb_couvert', 'id_jour'], axis=1)  # Caractéristiques
     y = df['nb_couvert']  # Variable cible
-    X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, random_state=42)
-
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    
     # Set the experiment name or ID
     experiment_name = "predict_couverts" if run_name != "test_run" else "test_experiment"
 
@@ -49,13 +48,39 @@ def modelisation(connection, run_name, start_date="2023-01-01", end_date="2024-0
         experiment_id = mlflow.create_experiment(experiment_name)
     else:
         experiment_id = experiment.experiment_id
-
     with mlflow.start_run(experiment_id=experiment_id, run_name=run_name) as run:
+
+        categorical_features = ['weather_main', 'weather_description']  # Les colonnes catégorielles
+
+        # Encodage des colonnes catégorielles
+        X_train = pd.get_dummies(X_train, columns=categorical_features)
+        X_test = pd.get_dummies(X_test, columns=categorical_features)
+
+        # Ajouter les colonnes manquantes avec des valeurs par défaut (0)
+        missing_columns_in_train = set(X_test.columns) - set(X_train.columns)
+        missing_columns_in_test = set(X_train.columns) - set(X_test.columns)
+
+        for col in missing_columns_in_train:
+            X_train[col] = 0
+        for col in missing_columns_in_test:
+            X_test[col] = 0
+
+        # Réordonner les colonnes
+        X_train = X_train[X_test.columns]
+        
+        # Enregistrer l'ordre des colonnes dans MLflow
+        column_order = X_train.columns.tolist()  # Liste de l'ordre des colonnes
+        mlflow.log_dict({"column_order": column_order}, "column_order.json")
+        print(column_order)
+
+        # Proceed with the model training and prediction
         model = LinearRegression()
         model.fit(X_train, y_train)
 
+        # Perform the prediction as before
         mlflow.set_tag("start_date", start_date)
         mlflow.set_tag("end_date", end_date)
+        mlflow.set_tag("mlflow.user", "Aga")
 
         # Predictions for training set
         y_train_pred = model.predict(X_train)
@@ -98,10 +123,7 @@ def modelisation(connection, run_name, start_date="2023-01-01", end_date="2024-0
         # Save the model to MLflow
         mlflow.sklearn.log_model(model, run_name)
         run_id = run.info.run_id
-    return run_id
-
-if __name__ == "__main__":
-    connection = connect_to_database()
+        return run_id
 
 # Le Mean Squared Logarithmic Error (MSLE) est pertinent dans le cadre de ce projet, car il pénalise plus fortement les sous-prévisions que les sur-prévisions. 
 # Dans le contexte de la prévision du nombre de couverts dans une cantine, il est crucial de s'assurer que le nombre de repas prévus soit au moins égal 

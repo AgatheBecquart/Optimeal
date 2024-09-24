@@ -9,7 +9,7 @@ import argparse
 parser = argparse.ArgumentParser()
 
 # Add arguments
-parser.add_argument('run_name', default='third_run_2023')
+parser.add_argument('run_name', default='test_weat')
 
 # Parse the command-line arguments
 args = parser.parse_args()

@@ -6,6 +6,7 @@ import pickle
 from dotenv import load_dotenv
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from datetime import date
+from sqlalchemy import create_engine
 
 async def has_access(credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer())):
     token = credentials.credentials
@@ -29,8 +30,6 @@ async def has_access(credentials: HTTPAuthorizationCredentials = Depends(HTTPBea
         raise credentials_exception
 
 class SinglePredictionInput(BaseModel):
-    temperature: float
-    nb_presence_sur_site : float
     id_jour : date 
 
 class SinglePredictionOutput(BaseModel):

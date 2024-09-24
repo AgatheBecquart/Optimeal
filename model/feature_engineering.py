@@ -54,8 +54,3 @@ def feature_engineering(connection, run_name):
 
     return df
     
-if __name__ == "__main__":
-    import pandas as pd
-    connection = connect_to_database()
-    df = feature_engineering(connection,"first_run_2023")
-    df.to_sql("first_run_2023"+'_TrainingDataset', connection, index=False, if_exists='replace')

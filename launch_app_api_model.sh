@@ -1,6 +1,6 @@
 #!/bin/bash
 
-model_name="third_run_2023"
+model_name="run_final"
 absolute_path=$(readlink -f "$0")
 script_dir=$(dirname "$absolute_path")
 # Spécifiez le chemin du fichier à rechercher
