@@ -54,7 +54,7 @@ jobs:
             --memory 1 \
             --ip-address public \
             --dns-name-label ${{ inputs.app_name }} \
-            --ports 80 8080 \
+            --ports 80 8000 \
             --secure-environment-variables \
             "ENV"=${{ secrets.ENV }} \
             "SERVER"=${{ secrets.SERVER }} \
@@ -65,13 +65,8 @@ jobs:
             "WORKSPACE_NAME"=${{ secrets.WORKSPACE_NAME }} \
             "RESOURCE_GROUP"=${{ secrets.RESOURCE_GROUP }}  \
             "SUBSCRIPTION_ID"=${{ secrets.SUBSCRIPTION_ID }} \
-            "APPLICATIONINSIGHTS_CONNECTION_STRING"=${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }} 
+            "APPLICATIONINSIGHTS_CONNECTION_STRING"=${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }} \
             echo "Container instance created."
 
     - name: Test Endpoint
-      run: curl -k -I ${{ inputs.app_name }}.francecentrale.azurecontainer.io:8080/docs
-          
-     - name: Get Container Logs
-      run: |
-        az container logs --resource-group ${{ secrets.RESOURCE_GROUP }} --name ${{ inputs.app_name }}
-#comment    
+      run: curl -I ${{ inputs.app_name }}.switzerlandnorth.azurecontainer.io:8000/docs
