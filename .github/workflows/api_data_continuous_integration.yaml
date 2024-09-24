@@ -68,4 +68,4 @@
                 #   run: pytest api --cov-fail-under=80 -vv
                 #   env:
                 #     APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}
-        
+          
