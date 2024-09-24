@@ -49,7 +49,7 @@ jobs:
           az container create \
             --resource-group ${{ secrets.RESOURCE_GROUP }} \
             --name ${{ inputs.app_name }} \
-            --image ${{ secrets.DOCKERHUB_USERNAME }}/api_model:latest \
+            --image ${{ secrets.DOCKERHUB_USERNAME }}/api_data:latest \
             --cpu 1 \
             --memory 1 \
             --ip-address public \
@@ -69,4 +69,4 @@ jobs:
             echo "Container instance created."
 
     - name: Test Endpoint
-      run: curl -k -I ${{ inputs.app_name }}.francecentrale.azurecontainer.io:8080/docs
+      run: curl -k -I ${{ inputs.app_name }}.switzerlandnorth.azurecontainer.io:8080/docs

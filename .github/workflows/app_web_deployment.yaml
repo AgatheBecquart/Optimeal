@@ -68,5 +68,5 @@ jobs:
             echo "Container instance created."
 
     - name: Test Endpoint
-      run: curl -I ${{ inputs.app_name }}.francecentrale.azurecontainer.io:8000/
+      run: curl -I ${{ inputs.app_name }}.switzerlandnorth.azurecontainer.io:8000/
       #

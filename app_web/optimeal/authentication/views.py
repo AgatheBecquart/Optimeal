@@ -6,8 +6,8 @@ from django.contrib import messages
 from .forms import SignUpEmployeeForm, UpdateEmployeeForm, LoginEmployeeForm
 
 # URL pour obtenir un token
-TOKEN_URL = 'http://optimeal-data.francecentrale.azurecontainer.io:8000/auth/token'
-EMPLOYEES_URL = 'http://optimeal-data.francecentrale.azurecontainer.io:8000/employees'
+TOKEN_URL = 'http://optimeal-data.switzerlandnorth.azurecontainer.io:8000/auth/token'
+EMPLOYEES_URL = 'http://optimeal-data.switzerlandnorth.azurecontainer.io:8000/employees'
 
 def generate_employee_unique_id(first_name, last_name):
     # Générez l'ID unique à partir du nom et prénom

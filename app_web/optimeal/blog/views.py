@@ -35,7 +35,7 @@ def home(request):
 #             }
 
 #             try:
-#                 response = requests.post("http://optimeal-model.francecentrale.azurecontainer.io:8000/predict", json=data, headers=headers)
+#                 response = requests.post("http://optimeal-model.switzerlandnorth.azurecontainer.io:8000/predict", json=data, headers=headers)
 #                 response.raise_for_status()
 #                 result = response.json()
 #             except requests.exceptions.RequestException as e:
@@ -140,7 +140,7 @@ def predict_view(request):
 
                 with tracer.start_as_current_span("external_api_request"):
                     try:
-                        response = requests.post("http://optimeal-model.francecentrale.azurecontainer.io:8000/predict", json=data, headers=headers)
+                        response = requests.post("http://optimeal-model.switzerlandnorth.azurecontainer.io:8000/predict", json=data, headers=headers)
                         response.raise_for_status()
                         result = response.json()
 
