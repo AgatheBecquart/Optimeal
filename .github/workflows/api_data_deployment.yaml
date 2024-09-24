@@ -57,7 +57,6 @@ jobs:
             --ports 80 8000 \
             --environment-variables \
             "ENV"=${{ secrets.ENV }} \
-            --secure-environment-variables \
             "SERVER"=${{ secrets.SERVER }} \
             "PASSWORD"=${{ secrets.PASSWORD }} \
             "DATABASE"=${{ secrets.DATABASE }}  \
@@ -68,7 +67,7 @@ jobs:
             "SUBSCRIPTION_ID"=${{ secrets.SUBSCRIPTION_ID }} \
             "APPLICATIONINSIGHTS_CONNECTION_STRING"=${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }} 
             echo "Container instance created."
-            
+
     - name: Test Endpoint
       run: |
         curl -I ${{ inputs.app_name }}.switzerlandnorth.azurecontainer.io:8000/docs
