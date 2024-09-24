@@ -70,5 +70,3 @@ jobs:
 
     - name: Test Endpoint
       run: curl -I ${{ inputs.app_name }}.switzerlandnorth.azurecontainer.io:8000/docs
-
-      #commen
