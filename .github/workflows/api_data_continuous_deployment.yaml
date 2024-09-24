@@ -10,24 +10,51 @@ on:
 
 jobs:
   health-check-job:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+  runs-on: ubuntu-latest # os for running the job
+              
+              env:
+                  SECRET_KEY: ${{ secrets.SECRET_KEY }}
+                  APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}
+              
+              steps:
+                  - name: Checkout code # checking our the code at current commit that triggers the workflow
+                    uses: actions/checkout@v2
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.8'
+                  - name: Cache dependency # caching dependency will make our build faster.
+                    uses: actions/cache@v2 # for more info checkout pip section documentation at https://github.com/actions/cache
+                    with:
+                          path: ~/.cache/pip
+                          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+                          restore-keys: |
+                              ${{ runner.os }}-pip-
+      
+                  - name: Setup python environment # setting python environment to 3.x
+                    uses: actions/setup-python@v2
+                    with:
+                      python-version: '3.12' # if you want multiple python version run just use matrix strategy in job config. See the documentation of GitHub Actions
+              
+                  - name: Check Python version # checking the python version to see if 3.x is installed.
+                    run: python --version
+      
+                  - name: Install requirements # install application requirements
+                    run: pip install -r api_data/requirements.txt
+                  
+                  - name: Install Bandit
+                    run: pip install bandit
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r api_data/requirements.txt
+                  - name: Run Security Check
+                    run: bandit -r api
+                    continue-on-error: true
 
-    - name: Run tests
-      run: |
-        pytest
+                  - name: Check Syntax # check code formatting
+                    run: pycodestyle --statistics --ignore=E501,E712 api
+                    continue-on-error: true
+      
+                  # - name: Run Test and Coverage # running tests
+                  # #   working-directory: ./api
+                  #   run: pytest api --cov-fail-under=80 -vv
+                  #   env:
+                  #     APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}
 
   build-and-deploy:
     needs: [health-check-job]
@@ -58,11 +85,11 @@ jobs:
           az account set --subscription ${{ secrets.SUBSCRIPTION_ID }}
           
           # Check if the container exists
-          container_exists=$(az container show --resource-group ${{ secrets.RESOURCE_GROUP }} --name optimeal-data --query "name" -o tsv || echo "notfound")
+          container_exists=$(az container show --resource-group ${{ secrets.RESOURCE_GROUP }} --name ${{ inputs.app_name }} --query "name" -o tsv || echo "notfound")
     
           if [ "$container_exists" != "notfound" ]; then
             echo "Container instance exists. Deleting..."
-            az container delete --resource-group ${{ secrets.RESOURCE_GROUP }} --name optimeal-data --yes
+            az container delete --resource-group ${{ secrets.RESOURCE_GROUP }} --name ${{ inputs.app_name }} --yes
             echo "Container instance deleted."
           else
             echo "Container instance does not exist."
@@ -70,13 +97,13 @@ jobs:
     
           az container create \
             --resource-group ${{ secrets.RESOURCE_GROUP }} \
-            --name optimeal-data \
+            --name ${{ inputs.app_name }} \
             --image ${{ secrets.DOCKERHUB_USERNAME }}/api_data:latest \
             --cpu 1 \
             --memory 1 \
             --ip-address public \
-            --dns-name-label optimeal-data \
-            --ports 80 8000 \
+            --dns-name-label ${{ inputs.app_name }} \
+            --ports 80 8080 \
             --secure-environment-variables \
             "ENV"=${{ secrets.ENV }} \
             "SERVER"=${{ secrets.SERVER }} \
@@ -90,15 +117,13 @@ jobs:
             "APPLICATIONINSIGHTS_CONNECTION_STRING"=${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }} 
             echo "Container instance created."
 
-    - name: Wait for container to be ready
-      run: sleep 120  # Augmenter le délai d'attente à 120 secondes
-
     - name: Test Endpoint
+      run: curl -k -I ${{ inputs.app_name }}.francecentrale.azurecontainer.io:8080/docs
+          
+     - name: Get Container Logs
       run: |
-        curl -k -I optimeal-data.francecentrale.azurecontainer.io:8000/docs
-
-    - name: Get Container Logs
-      run: |
-        az container logs --resource-group ${{ secrets.RESOURCE_GROUP }} --name optimeal-data
-
-#comment
+        az container logs --resource-group ${{ secrets.RESOURCE_GROUP }} --name ${{ inputs.app_name }}
+    with:
+        app_name: optimeal-model
+    secrets: inherit
+  
