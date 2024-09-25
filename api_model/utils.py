@@ -8,6 +8,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from datetime import date
 from sqlalchemy import create_engine
 
+
 async def has_access(credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer())):
     token = credentials.credentials
     load_dotenv()
@@ -29,21 +30,24 @@ async def has_access(credentials: HTTPAuthorizationCredentials = Depends(HTTPBea
     else:
         raise credentials_exception
 
+
 class SinglePredictionInput(BaseModel):
-    id_jour : date 
+    id_jour: date
+
 
 class SinglePredictionOutput(BaseModel):
     prediction: float
 
 
-def predict_single(loaded_model, df_to_predict): 
+def predict_single(loaded_model, df_to_predict):
     prediction = loaded_model.predict(df_to_predict)
     return prediction[0]
+
 
 def get_model(run_name):
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     model_path = os.path.join(base_dir, "api_model", f"{run_name}.pkl")
-    with open(model_path, 'rb') as file:
+    with open(model_path, "rb") as file:
         loaded_model = pickle.load(file)
     return loaded_model
 
@@ -53,7 +57,9 @@ def generate_token(to_encode):
     SECRET_KEY = os.environ.get("SECRET_KEY")
     ALGORITHM = "HS256"
     to_encode_dict = {"sub": to_encode}
-    print("DEBUG: SECRET_KEY =", repr(SECRET_KEY))  # Affichez la clé secrète à des fins de débogage
+    print(
+        "DEBUG: SECRET_KEY =", repr(SECRET_KEY)
+    )  # Affichez la clé secrète à des fins de débogage
     encoded_jwt = jwt.encode(to_encode_dict, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 

@@ -10,6 +10,7 @@ app.include_router(canteen_employees_router)
 
 app.include_router(authentificate_router)
 
+
 @app.get("/")
 def read_root():
     return "Server is running."
@@ -17,4 +18,5 @@ def read_root():
 
 if __name__ == "__main__":
     import uvicorn
+
     uvicorn.run(app, host="0.0.0.0", port=8000)

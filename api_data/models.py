@@ -2,13 +2,16 @@ from pydantic import BaseModel
 from typing import Optional
 from pydantic import ValidationError
 
+
 class Meteo(BaseModel):
     id_jour: str  # Date au format YYYY-MM-DD
     temperature: float
 
+
 class RepasVendus(BaseModel):
     id_jour: str  # Date au format YYYY-MM-DD
     nb_couvert: int
+
 
 class PresenceRH(BaseModel):
     id_agent_anonymise: int
@@ -18,6 +21,7 @@ class PresenceRH(BaseModel):
     type_presence: str
     origine: Optional[str] = None
     date_traitement: Optional[str] = None
+
 
 # Exemple de validation d'un objet Meteo
 try:

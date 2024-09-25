@@ -12,11 +12,7 @@ app = FastAPI()
 # routes
 PROTECTED = [Depends(has_access)]
 
-app.include_router(
-    api_model.predict.router,
-    prefix="/predict",
-    dependencies=PROTECTED
-)
+app.include_router(api_model.predict.router, prefix="/predict", dependencies=PROTECTED)
 
 if __name__ == "__main__":
     print(generate_token("admin"))

@@ -12,7 +12,7 @@ user = os.getenv("AZUREUSER")
 password = os.getenv("PASSWORD")
 
 # Chaîne de connexion à la base de données
-conn_str = f'DRIVER=ODBC Driver 17 for SQL Server;SERVER={server};DATABASE={database};UID={user};PWD={password}'
+conn_str = f"DRIVER=ODBC Driver 17 for SQL Server;SERVER={server};DATABASE={database};UID={user};PWD={password}"
 
 # Liste des tables à supprimer
 tables_to_drop = ["Meteo", "RepasVendus", "PresenceRH"]
@@ -22,7 +22,7 @@ try:
     conn = pyodbc.connect(conn_str)
     cursor = conn.cursor()
     print("Connexion réussie")
-    
+
     # Supprimer chaque table dans la liste
     for table in tables_to_drop:
         try:
@@ -30,12 +30,14 @@ try:
             conn.commit()  # Valider la transaction
             print(f"La table {table} a été supprimée avec succès.")
         except Exception as e:
-            print(f"Une erreur s'est produite lors de la suppression de la table {table}.")
+            print(
+                f"Une erreur s'est produite lors de la suppression de la table {table}."
+            )
             print(f"Erreur : {e}")
-    
+
 finally:
     # Fermer la connexion à la base de données
-    if 'cursor' in locals():
+    if "cursor" in locals():
         cursor.close()
-    if 'conn' in locals():
+    if "conn" in locals():
         conn.close()

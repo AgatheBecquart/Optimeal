@@ -1,8 +1,11 @@
 # SET UP CONNECTION STRING
 from dotenv import load_dotenv
 import os
+
 load_dotenv()
-APPLICATIONINSIGHTS_CONNECTION_STRING=os.getenv('APPLICATIONINSIGHTS_CONNECTION_STRING')
+APPLICATIONINSIGHTS_CONNECTION_STRING = os.getenv(
+    "APPLICATIONINSIGHTS_CONNECTION_STRING"
+)
 
 # PART 1 : SET UP LOGGING EXPORTER
 import logging
@@ -37,7 +40,9 @@ from azure.monitor.opentelemetry.exporter import AzureMonitorTraceExporter
 trace_exporter = AzureMonitorTraceExporter(
     connection_string=APPLICATIONINSIGHTS_CONNECTION_STRING
 )
-resource = Resource(attributes={"cloud.role": "DjangoApplication","service.name":"DjangoApplication"})
+resource = Resource(
+    attributes={"cloud.role": "DjangoApplication", "service.name": "DjangoApplication"}
+)
 tracer_provider = TracerProvider(resource=resource)
 tracer_provider.add_span_processor(BatchSpanProcessor(trace_exporter))
 
@@ -47,11 +52,11 @@ tracer = trace.get_tracer(__name__)
 
 # PART 3 : Instrument Django and Request for automatic HTTP logging and tracing
 from opentelemetry.instrumentation.django import DjangoInstrumentor
+
 DjangoInstrumentor().instrument()
 from opentelemetry.instrumentation.requests import RequestsInstrumentor
+
 RequestsInstrumentor().instrument()
-
-
 
 
 # PART 4 : SET UP METRICS EXPORTER
@@ -64,8 +69,10 @@ metric_exporter = AzureMonitorMetricExporter(
     connection_string=APPLICATIONINSIGHTS_CONNECTION_STRING
 )
 
-frequency_millis = 60000 #min
-reader = PeriodicExportingMetricReader(exporter=metric_exporter, export_interval_millis=frequency_millis)
+frequency_millis = 60000  # min
+reader = PeriodicExportingMetricReader(
+    exporter=metric_exporter, export_interval_millis=frequency_millis
+)
 metrics.set_meter_provider(MeterProvider(metric_readers=[reader]))
 meter = metrics.get_meter_provider().get_meter("satisfaction_metrics")
 

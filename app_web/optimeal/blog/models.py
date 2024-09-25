@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Prediction(models.Model):
     # Assurez-vous que ces champs correspondent exactement à ceux de votre table SQL
     prediction = models.IntegerField()
@@ -10,7 +11,9 @@ class Prediction(models.Model):
     model = models.CharField(max_length=100)
 
     class Meta:
-        db_table = 'predictions'  # Assurez-vous que cela correspond au nom de votre table
+        db_table = (
+            "predictions"  # Assurez-vous que cela correspond au nom de votre table
+        )
         # Si vous n'avez pas de champ 'id' dans votre table SQL, ajoutez ceci :
         managed = False  # Cela empêche Django de gérer cette table
         # Ajoutez cette ligne pour indiquer à Django de ne pas utiliser d'ID automatique

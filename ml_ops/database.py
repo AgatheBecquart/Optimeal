@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 from dotenv import load_dotenv
 import os
 
+
 def connect_to_database():
     load_dotenv()
     # Define your PostgreSQL connection parameters

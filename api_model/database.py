@@ -30,6 +30,7 @@ def connect_to_database():
 class Base(DeclarativeBase):
     pass
 
+
 class DBpredictions(Base):
 
     __tablename__ = "predictions"
@@ -38,9 +39,10 @@ class DBpredictions(Base):
     timestamp: Mapped[str]
     temperature: Mapped[float]
     nb_presence_sur_site: Mapped[float]
-    id_jour : Mapped[str]
+    id_jour: Mapped[str]
     prediction: Mapped[int]
     model: Mapped[str]
+
 
 # Dependency to get the database session
 
@@ -62,10 +64,11 @@ def get_db():
 #     characters = string.ascii_letters + string.digits
 #     return ''.join(random.choice(characters) for i in range(length))
 
+
 def generate_id(length=6):
     """Generate a unique numeric ID."""
     characters = string.digits  # Utilise uniquement les chiffres 0-9
-    return ''.join(random.choice(characters) for _ in range(length))
+    return "".join(random.choice(characters) for _ in range(length))
 
 
 def create_db_prediction(prediction: dict, session: Session) -> DBpredictions:
@@ -76,7 +79,7 @@ def create_db_prediction(prediction: dict, session: Session) -> DBpredictions:
     return db_prediction
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     engine = connect_to_database()
     session_local = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     Base.metadata.create_all(bind=engine)

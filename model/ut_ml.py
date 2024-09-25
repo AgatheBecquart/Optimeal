@@ -11,14 +11,15 @@ resource_group = os.getenv("RESOURCE_GROUP")
 workspace_name = os.getenv("WORKSPACE_NAME")
 
 
-ws = Workspace(subscription_id=subscription_id,
-                resource_group=resource_group,
-                workspace_name=workspace_name)
+ws = Workspace(
+    subscription_id=subscription_id,
+    resource_group=resource_group,
+    workspace_name=workspace_name,
+)
 # Replace 'experiment_name' and 'run_name' with your actual experiment name and run name
 
 
-
-experiment = Experiment(ws, 'predict_couverts')
+experiment = Experiment(ws, "predict_couverts")
 print(dir(experiment))
 # runs = [run for run in experiment.get_runs()]
 # runs = next(run for run in experiment.get_runs() if run.tags['mlflow.runName']=='remote_run')

@@ -10,6 +10,7 @@ from pydantic import PydanticDeprecatedSince20
 
 warnings.filterwarnings("ignore", category=PydanticDeprecatedSince20)
 
+
 def test_generate_token():
     # Define mock data and expires_delta
     load_dotenv()
@@ -31,7 +32,8 @@ def test_generate_token():
 async def test_get_has_access():
     access_token = generate_token("admin")
     credentials = HTTPAuthorizationCredentials(
-        scheme="Bearer", credentials=access_token)
+        scheme="Bearer", credentials=access_token
+    )
     is_auth = await has_access(credentials)
     assert isinstance(is_auth, bool)
     assert is_auth == True

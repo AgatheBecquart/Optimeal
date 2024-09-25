@@ -15,8 +15,7 @@ warnings.filterwarnings("ignore", category=PydanticDeprecatedSince20)
 @pytest.fixture(autouse=False)
 def valid_token(monkeypatch):
     # Mock the jwt.decode function to return the mock payload
-    monkeypatch.setattr("jose.jwt.decode", MagicMock(
-        return_value={"sub": "admin"}))
+    monkeypatch.setattr("jose.jwt.decode", MagicMock(return_value={"sub": "admin"}))
 
 
 @pytest.fixture(autouse=False)
@@ -27,10 +26,10 @@ def mock_predict_single(monkeypatch):
 
 TEST_DATABASE_URL = "sqlite:///:memory:"
 
-engine = create_engine(TEST_DATABASE_URL, connect_args={
-                       "check_same_thread": False}, poolclass=StaticPool)
-TestingSessionLocal = sessionmaker(
-    autocommit=False, autoflush=False, bind=engine)
+engine = create_engine(
+    TEST_DATABASE_URL, connect_args={"check_same_thread": False}, poolclass=StaticPool
+)
+TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
 @pytest.fixture
@@ -59,9 +58,13 @@ app.dependency_overrides[get_db] = override_get_db
 def test_predict_endpoint_unauthorized(session: Session):
     data = {"id_jour": "2024-02-29"}
     response = client.post("predict", json=data)
-    print(f"Réponse du serveur : {response.text}")  
-    assert response.status_code in [401, 403], f"Code de statut inattendu : {response.status_code}"
+    print(f"Réponse du serveur : {response.text}")
+    assert response.status_code in [
+        401,
+        403,
+    ], f"Code de statut inattendu : {response.status_code}"
     assert response.json() == {"detail": "Not authenticated"}
+
 
 def test_predict_single(valid_token, mock_predict_single, session: Session):
     # Assuming SinglePredictionInput is a pydantic model

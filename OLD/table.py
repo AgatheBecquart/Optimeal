@@ -12,12 +12,16 @@ user = os.getenv("AZUREUSER")
 password = os.getenv("PASSWORD")
 
 # Créer une connexion à la base de données
-engine = create_engine(f'mssql+pyodbc://{user}:{password}@{server}/{database}?driver=ODBC+Driver+17+for+SQL+Server')
+engine = create_engine(
+    f"mssql+pyodbc://{user}:{password}@{server}/{database}?driver=ODBC+Driver+17+for+SQL+Server"
+)
 
 
 # Liste des commandes SQL
-sql_commands = ["""
-SELECT * FROM Meteo """]
+sql_commands = [
+    """
+SELECT * FROM Meteo """
+]
 
 # Exécuter chaque commande SQL
 with engine.connect() as conn:
@@ -27,4 +31,3 @@ with engine.connect() as conn:
 
 # Fermer la connexion
 conn.close()
-

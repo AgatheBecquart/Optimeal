@@ -14,5 +14,6 @@ exclude_lines =
 
 omit =
     */test_*.py
-    */*_tests.py
+    */*_test.py
+    */tests/*
     */__init__.py
