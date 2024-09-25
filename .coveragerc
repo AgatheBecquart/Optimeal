@@ -1,6 +1,5 @@
 [run]
 source = 
-    api_model
     api_data
 
 [report]
@@ -18,4 +17,5 @@ omit =
     */test_*.py
     */*_test.py
     */tests/*
+    */models.py
     */__init__.py
