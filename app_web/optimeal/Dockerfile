@@ -34,4 +34,4 @@ RUN python /app/optimeal/manage.py collectstatic --noinput
 EXPOSE 8000
 
 # Run the application
-CMD ["gunicorn", "--bind", ":8000", "--chdir", "/app/optimeal", "optimeal.wsgi:application"]
+CMD ["gunicorn", "--bind", ":8000", "--chdir", "/app/optimeal", "--workers", "4", "optimeal.wsgi:application"]

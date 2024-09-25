@@ -63,6 +63,11 @@ jobs:
             --secure-environment-variables \
             "TOKEN"=${{ secrets.TOKEN }} \
             "APP_NAME"=${{ secrets.APP_NAME }} \
+            "SERVER"=${{ secrets.SERVER }} \
+            "PASSWORD"=${{ secrets.PASSWORD }} \
+            "DATABASE"=${{ secrets.DATABASE }}  \
+            "AZUREUSER"=${{ secrets.AZUREUSER }}  \
+            "SECRET_KEY"=${{ secrets.SECRET_KEY }} \
             "APPLICATIONINSIGHTS_CONNECTION_STRING"=${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }} \
             "MONITORING"='True' 
             echo "Container instance created."
