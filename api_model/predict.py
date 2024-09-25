@@ -15,7 +15,11 @@ router = APIRouter()
 
 
 def prepare_input_data(input_data):
-    df = pd.DataFrame([input_data.__dict__])
+    if isinstance(input_data, dict):
+        df = pd.DataFrame([input_data])
+    else:
+        df = pd.DataFrame([input_data.__dict__])
+    
     return df
 
 

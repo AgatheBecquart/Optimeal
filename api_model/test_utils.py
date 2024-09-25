@@ -5,7 +5,10 @@ import pytest
 from jose import jwt
 from dotenv import load_dotenv
 from fastapi.security import HTTPAuthorizationCredentials
+import warnings
+from pydantic import PydanticDeprecatedSince20
 
+warnings.filterwarnings("ignore", category=PydanticDeprecatedSince20)
 
 def test_generate_token():
     # Define mock data and expires_delta

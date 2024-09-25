@@ -40,9 +40,10 @@ def predict_single(loaded_model, df_to_predict):
     prediction = loaded_model.predict(df_to_predict)
     return prediction[0]
 
-
 def get_model(run_name):
-    with open(f"api_model/{run_name}.pkl", 'rb') as file:
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    model_path = os.path.join(base_dir, "api_model", f"{run_name}.pkl")
+    with open(model_path, 'rb') as file:
         loaded_model = pickle.load(file)
     return loaded_model
 
