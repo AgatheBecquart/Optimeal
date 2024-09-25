@@ -60,7 +60,7 @@
                   continue-on-error: true
 
                 - name: Check Syntax # check code formatting
-                  run: pycodestyle --statistics --ignore=E501,E712 api
+                  run: pycodestyle --statistics --ignore=E501,E712 api_data
                   continue-on-error: true
     
                 # - name: Run Test and Coverage # running tests

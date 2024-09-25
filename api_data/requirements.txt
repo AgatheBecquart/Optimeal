@@ -11,3 +11,9 @@ pyodbc
 django-mssql-backend==2.8.1
 django==5.1
 passlib==1.7.4
+pyodbc
+pytest_asyncio
+pytest-cov
+bandit
+pycodestyle
+setuptools

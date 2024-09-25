@@ -54,6 +54,12 @@
                     pip install -r api_model/requirements.txt
                     pip install pytest pytest-cov
                     pip install pycodestyle
+                    
+                - name: Install autopep8
+                  run: pip install autopep8
+
+                - name: Run autopep8
+                  run: autopep8 --in-place --aggressive --aggressive api_model/feature_engineering.py
 
                 - name: Install Bandit
                   run: pip install bandit
