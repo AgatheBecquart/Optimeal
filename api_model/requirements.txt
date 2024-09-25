@@ -16,3 +16,4 @@ pytest_asyncio
 pytest-cov
 bandit
 pycodestyle
+setuptools
