@@ -68,6 +68,7 @@ jobs:
             "DATABASE"=${{ secrets.DATABASE }}  \
             "AZUREUSER"=${{ secrets.AZUREUSER }}  \
             "SECRET_KEY"=${{ secrets.SECRET_KEY }} \
+            "ENCODED_JWT"=${{ secrets.ENCODED_JWT }} \
             "APPLICATIONINSIGHTS_CONNECTION_STRING"=${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }} \
             "MONITORING"='True' 
             echo "Container instance created."
