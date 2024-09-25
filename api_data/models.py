@@ -1,31 +1,21 @@
 from pydantic import BaseModel
-from typing import Optional
-from pydantic import ValidationError
 
 
-class Meteo(BaseModel):
-    id_jour: str  # Date au format YYYY-MM-DD
-    temperature: float
+class CanteenEmployeeUser(BaseModel):
+    employee_id: str
+    employee_unique_id: str
+    employee_username: str
+    employee_password: str
+    employee_email: str
+    employee_first_name: str
+    employee_last_name: str
+    employee_zip_code_prefix: str
+    employee_city: str
+    employee_state: str
 
 
-class RepasVendus(BaseModel):
-    id_jour: str  # Date au format YYYY-MM-DD
-    nb_couvert: int
-
-
-class PresenceRH(BaseModel):
-    id_agent_anonymise: int
-    date_demi_j: str  # Date et heure au format 'YYYY-MM-DD HH:MM:SS'
-    id_motif: int
-    lib_motif: str
-    type_presence: str
-    origine: Optional[str] = None
-    date_traitement: Optional[str] = None
-
-
-# Exemple de validation d'un objet Meteo
-try:
-    meteo_data = Meteo.parse_obj({"id_jour": "2023-09-01", "temperature": 25.6})
-    print(meteo_data)
-except ValidationError as e:
-    print(e)
+class User(BaseModel):
+    username: str
+    email: str | None = None
+    full_name: str | None = None
+    disabled: bool | None = None

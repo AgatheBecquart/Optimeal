@@ -1,10 +1,10 @@
-from database.core import Base, get_db, DBCanteenEmployees
-from database.authentificate import create_db_user, UserCreate
-from database.canteen_employees import generate_id
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine, StaticPool
 from sqlalchemy.orm import sessionmaker, Session
-from main import app
+from api_data.database.core import Base, get_db, DBCanteenEmployeesUser
+from api_data.database.authentificate import create_db_user, UserCreate
+from api_data.database.canteen_employees import generate_id
+from api_data.main import app
 from typing import Generator
 import pytest
 from unittest.mock import MagicMock
@@ -23,13 +23,18 @@ def session() -> Generator[Session, None, None]:
     Base.metadata.create_all(bind=engine)
     db_session = TestingSessionLocal()
 
-    # create test canteen_employees
-    db_canteen_employee = DBCanteenEmployees(
-        canteen_employee_id=generate_id(),
-        canteen_employee_unique_id="4321",
-        canteen_employee_zip_code_prefix="59000",
-        canteen_employee_city="Lille",
-        canteen_employee_state="HDF",
+    # create test canteen employee
+    db_canteen_employee = DBCanteenEmployeesUser(
+        employee_id=generate_id(),
+        employee_unique_id="12345",
+        employee_username="johndoe",
+        employee_password="hashed_password",
+        employee_email="john.doe@example.com",
+        employee_first_name="John",
+        employee_last_name="Doe",
+        employee_zip_code_prefix="59000",
+        employee_city="Lille",
+        employee_state="HDF",
     )
 
     db_session.add(db_canteen_employee)
@@ -52,17 +57,14 @@ def session() -> Generator[Session, None, None]:
     Base.metadata.drop_all(bind=engine)
 
 
-# Define a pytest fixture to mock the dependencies
 @pytest.fixture(autouse=False)
 def valid_token(monkeypatch):
-    # Mock the jwt.decode function to return the mock payload
     monkeypatch.setattr("jose.jwt.decode", MagicMock(return_value={"sub": "test_user"}))
 
 
 client = TestClient(app)
 
 
-# Dependency to override the get_db dependency in the main app
 def override_get_db():
     database = TestingSessionLocal()
     yield database
@@ -80,11 +82,17 @@ def test_read_root(session: Session):
 
 def test_create_canteen_employee_unauthorize(session: Session):
     response = client.post(
-        "/canteen_employees/",
+        "/employees/",
         json={
-            "canteen_employee_unique_id": "861eff4711a542e4b93843c6dd7febb0",
-            "canteen_employee_zip_code_prefix": "14409",
-            "canteen_employee_city": "franca",
+            "employee_unique_id": "67890",
+            "employee_username": "janesmith",
+            "employee_password": "password123",
+            "employee_email": "jane.smith@example.com",
+            "employee_first_name": "Jane",
+            "employee_last_name": "Smith",
+            "employee_zip_code_prefix": "75000",
+            "employee_city": "Paris",
+            "employee_state": "IDF",
         },
     )
     assert response.status_code == 401, response.text
@@ -92,11 +100,11 @@ def test_create_canteen_employee_unauthorize(session: Session):
 
 def test_create_improper_canteen_employee(session: Session, valid_token):
     response = client.post(
-        "/canteen_employees/",
+        "/employees/",
         json={
-            "canteen_employee_unique_id": "861eff4711a542e4b93843c6dd7febb0",
-            "canteen_employee_zip_code_prefix": "14409",
-            "canteen_employee_city": "franca",
+            "employee_unique_id": "67890",
+            "employee_username": "janesmith",
+            "employee_email": "jane.smith@example.com",
         },
         headers={"Authorization": f"Bearer {'mocked_token'}"},
     )
@@ -105,12 +113,17 @@ def test_create_improper_canteen_employee(session: Session, valid_token):
 
 def test_create_canteen_employee(session: Session, valid_token):
     response = client.post(
-        "/canteen_employees/",
+        "/employees/",
         json={
-            "canteen_employee_unique_id": "861eff4711a542e4b93843c6dd7febb0",
-            "canteen_employee_zip_code_prefix": "14409",
-            "canteen_employee_city": "franca",
-            "canteen_employee_state": "SP",
+            "employee_unique_id": "67890",
+            "employee_username": "janesmith",
+            "employee_password": "password123",
+            "employee_email": "jane.smith@example.com",
+            "employee_first_name": "Jane",
+            "employee_last_name": "Smith",
+            "employee_zip_code_prefix": "75000",
+            "employee_city": "Paris",
+            "employee_state": "IDF",
         },
         headers={"Authorization": f"Bearer {'mocked_token'}"},
     )
@@ -135,31 +148,17 @@ def test_create_user(session: Session):
 
 
 def test_login_for_access_token(session):
-
-    # Make a request to the endpoint
     response = client.post(
         "/auth/token", data={"username": "test_user", "password": "test_password"}
     )
-
-    # Assert the response status code
     assert response.status_code == 200
-
-    # Assert that the response contains the access token
     assert "access_token" in response.json()
     assert response.json()["token_type"] == "bearer"
 
 
-# Define a test case
 def test_is_authorized(session: Session, valid_token):
-
-    # Make a request to the endpoint with the mock token
     response = client.get(
         "/auth/is_authorized/", headers={"Authorization": f"Bearer {'mocked_token'}"}
     )
-
-    # Assert the response status code
     assert response.status_code == 200
-
-    # Assert any other aspects of the response if needed
-    # For example, if you expect the response to contain user data
     assert response.json() == True

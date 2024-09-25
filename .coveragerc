@@ -1,5 +1,7 @@
 [run]
-source = api_model
+source = 
+    api_model
+    api_data
 
 [report]
 exclude_lines =

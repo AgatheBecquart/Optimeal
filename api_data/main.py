@@ -1,6 +1,6 @@
 from fastapi import FastAPI, APIRouter
-from routers.canteen_employees import router as canteen_employees_router
-from routers.authentificate import router as authentificate_router
+from api_data.routers.canteen_employees import router as canteen_employees_router
+from api_data.routers.authentificate import router as authentificate_router
 
 test_router = APIRouter()
 

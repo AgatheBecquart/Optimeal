@@ -48,10 +48,13 @@
             
                 - name: Check Python version # checking the python version to see if 3.x is installed.
                   run: python --version
-    
-                - name: Install requirements # install application requirements
-                  run: pip install -r api_data/requirements.txt
                 
+                - name: Install dependencies
+                  run: |
+                    pip install -r api_data/requirements.txt
+                    pip install pytest pytest-cov
+                    pip install pycodestyle
+
                 - name: Install Bandit
                   run: pip install bandit
 
@@ -63,9 +66,10 @@
                   run: pycodestyle --statistics --ignore=E501,E712 api_data
                   continue-on-error: true
     
-                # - name: Run Test and Coverage # running tests
-                # #   working-directory: ./api
-                #   run: pytest api --cov-fail-under=80 -vv
-                #   env:
-                #     APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}
-#
+                - name: Run Test and Coverage
+                  run: |
+                    coverage run -m pytest api_data -vv
+                    coverage report --fail-under=80
+                  env:
+                    APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}
+                    #

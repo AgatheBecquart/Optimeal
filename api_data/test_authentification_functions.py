@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine, StaticPool
 from sqlalchemy.orm import sessionmaker, Session
-from database.core import Base
+from api_data.database.core import Base
 from typing import Generator
-from database.authentificate import (
+from api_data.database.authentificate import (
     User,
     UserCreate,
     create_db_user,

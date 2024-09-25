@@ -4,8 +4,8 @@ from fastapi.params import Depends
 from sqlalchemy.orm import Session
 from typing import List, Annotated
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from database.core import get_db
-from database.authentificate import (
+from api_data.database.core import get_db
+from api_data.database.authentificate import (
     Token,
     User,
     UserCreate,

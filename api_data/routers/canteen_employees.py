@@ -3,9 +3,9 @@ from fastapi.params import Depends
 from sqlalchemy.orm import Session
 from typing import List
 from typing import List, Annotated
-from database.core import NotFoundError, get_db
-from database.authentificate import oauth2_scheme, has_access, User
-from database.canteen_employees import (
+from api_data.database.core import NotFoundError, get_db
+from api_data.database.authentificate import oauth2_scheme, has_access, User
+from api_data.database.canteen_employees import (
     CanteenEmployeeUser,
     CanteenEmployeeUserCreate,
     CanteenEmployeeUserUpdate,
