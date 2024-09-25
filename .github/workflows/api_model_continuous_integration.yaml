@@ -65,7 +65,9 @@
                   run: pycodestyle --statistics --ignore=E501,E712 api
                   continue-on-error: true
     
-                - name: Run Test and Coverage # exécution des tests
-                  run: pytest api_model --cov=api_model --cov-fail-under=80 -vv
+                - name: Run Test and Coverage
+                  run: |
+                    coverage run -m pytest api_model -vv
+                    coverage report --fail-under=80
                   env:
                     APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}
