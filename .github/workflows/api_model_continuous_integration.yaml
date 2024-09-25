@@ -48,10 +48,12 @@
             
                 - name: Check Python version # checking the python version to see if 3.x is installed.
                   run: python --version
-    
-                - name: Install requirements # install application requirements
-                  run: pip install -r api_model/requirements.txt
                 
+                - name: Install dependencies
+                  run: |
+                    pip install -r api_model/requirements.txt
+                    pip install pytest pytest-cov
+
                 - name: Install Bandit
                   run: pip install bandit
 
