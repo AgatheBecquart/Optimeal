@@ -53,6 +53,7 @@
                   run: |
                     pip install -r api_model/requirements.txt
                     pip install pytest pytest-cov
+                    pip install pycodestyle
 
                 - name: Install Bandit
                   run: pip install bandit
