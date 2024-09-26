@@ -17,16 +17,20 @@
                 - develop
         workflow_call:
 
-    #  jobs definition
+ #  jobs definition
     jobs:
         health-check-job: # health check job for testing and code formatting check
         
             runs-on: ubuntu-latest # os for running the job
             
+            env:
+                SECRET_KEY: ${{ secrets.SECRET_KEY }}
+                APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}
+            
             steps:
                 - name: Checkout code # checking our the code at current commit that triggers the workflow
                   uses: actions/checkout@v2
-    
+
                 - name: Cache dependency # caching dependency will make our build faster.
                   uses: actions/cache@v2 # for more info checkout pip section documentation at https://github.com/actions/cache
                   with:
@@ -38,14 +42,23 @@
                 - name: Setup python environment # setting python environment to 3.x
                   uses: actions/setup-python@v2
                   with:
-                    python-version: '3.10' # if you want multiple python version run just use matrix strategy in job config. See the documentation of GitHub Actions
+                    python-version: '3.12' # if you want multiple python version run just use matrix strategy in job config. See the documentation of GitHub Actions
             
                 - name: Check Python version # checking the python version to see if 3.x is installed.
                   run: python --version
-    
-                - name: Install requirements # install application requirements
-                  run: pip install -r app_web/optimeal/requirements.txt
                 
+                - name: Install dependencies
+                  run: |
+                    pip install -r app_web/requirements.txt
+                    pip install pytest pytest-cov
+                    pip install pycodestyle
+                    
+                - name: Install autopep8
+                  run: pip install autopep8
+
+                - name: Run autopep8
+                  run: autopep8 --in-place --aggressive --aggressive app_web/feature_engineering.py
+
                 - name: Install Bandit
                   run: pip install bandit
 
@@ -56,10 +69,11 @@
                 - name: Check Syntax # check code formatting
                   run: pycodestyle --statistics --ignore=E501,E712 app_web
                   continue-on-error: true
-                    
-                - name: Collect Statics # run migrations to create table in side car db container
-                  run: python app_web/optimeal/manage.py collectstatic --noinput
-
-                # - name: Run Test and Coverage # running tests
-                # #   working-directory: ./api
-                #   run: pytest app_web --cov-fail-under=80 -vv
+    
+                - name: Run Test and Coverage
+                  run: |
+                    coverage run -m pytest app_web -vv
+                    coverage report --fail-under=80
+                  env:
+                    APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}
+                    #

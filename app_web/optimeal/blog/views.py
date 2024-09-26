@@ -24,24 +24,20 @@ load_dotenv()
 
 def predict_view(request):
     with tracer.start_as_current_span("predict_view_span"):
-        result = None
-        error = None
-        temperature = None
+        context = {
+            'form': PredictionForm(),
+            'temperature': None,
+            'error': None
+        }
 
         if request.method == "POST":
             form = PredictionForm(request.POST)
+            context['form'] = form
             if form.is_valid():
                 with tracer.start_as_current_span("form_processing"):
-                    id_jour = form.cleaned_data["id_jour"].strftime(
-                        "%Y-%m-%d"
-                    )  # Formatage de la date au format YYYY-MM-DD
-
-                    # Convertir la date au format ISO avec heure (ajout de l'heure pour correspondre à ce que l'API attend)
+                    id_jour = form.cleaned_data["id_jour"].strftime("%Y-%m-%d")
                     formatted_date = id_jour
-
-                    # Créer les données pour l'API en utilisant la date formatée
-                    data = {"id_jour": formatted_date}  # Envoi de la date avec heure
-
+                    data = {"id_jour": formatted_date}
                     headers = {"Authorization": f"Bearer {os.getenv('ENCODED_JWT')}"}
 
                 with tracer.start_as_current_span("external_api_request"):
@@ -52,30 +48,20 @@ def predict_view(request):
                             headers=headers,
                         )
                         response.raise_for_status()
-                        result = response.json()
+                        context['result'] = response.json()
 
-                        prediction_value = result.get("prediction", 0)
+                        prediction_value = context['result'].get("prediction", 0)
                         rounded_prediction_value = round(prediction_value)
                         logger.info(f"Prediction result: {rounded_prediction_value}")
                         prediction_counter_per_minute.add(1)
 
                     except requests.exceptions.RequestException as e:
-                        error = str(e)
-                        logger.error(f"API request failed: {error}")
-        else:
-            form = PredictionForm()
+                        context['error'] = str(e)
+                        logger.error(f"API request failed: {context['error']}")
+            else:
+                context['error'] = "Formulaire invalide. Veuillez réessayer."
 
-        return render(
-            request,
-            "blog/predict.html",
-            {
-                "form": form,
-                "result": result,
-                "temperature": temperature,
-                "error": error,
-            },
-        )
-
+        return render(request, "blog/predict.html", context)
 
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
