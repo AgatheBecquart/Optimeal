@@ -67,10 +67,10 @@
                 - name: Run Test and Coverage
                   run: |
                     export PYTHONPATH=$PYTHONPATH:$(pwd)/app_web/optimeal
+                    export MONITORING=False
                     django-admin test app_web/optimeal --settings=optimeal.settings_test
                     coverage run --source='.' manage.py test app_web/optimeal
                     coverage report --fail-under=80
                   env:
-                    APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}
                     DJANGO_SETTINGS_MODULE: optimeal.settings_test
                     PYTHONPATH: app_web/optimeal
