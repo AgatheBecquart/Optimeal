@@ -67,19 +67,12 @@ TEMPLATES = [
 WSGI_APPLICATION = "optimeal.wsgi.application"
 
 DATABASES = {
-    "default": {
-        "ENGINE": "mssql",
-        "NAME": os.getenv("DATABASE"),
-        "USER": os.getenv("AZUREUSER"),
-        "PASSWORD": os.getenv("PASSWORD"),
-        "HOST": os.getenv("SERVER"),
-        "PORT": "1433",  # Par défaut, SQL Server utilise le port 1433
-        "OPTIONS": {
-            "driver": "ODBC Driver 17 for SQL Server",
-            "extra_params": "TrustServerCertificate=yes;",  # Utilisé si SSL est requis sans certificat valide
-        },
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:',
     }
 }
+
 
 # Validation des mots de passe
 AUTH_PASSWORD_VALIDATORS = [
@@ -135,3 +128,4 @@ MONITORING = os.getenv("MONITORING", default=False)
 
 if MONITORING:
     import optimeal.opentelemetry_setup
+
