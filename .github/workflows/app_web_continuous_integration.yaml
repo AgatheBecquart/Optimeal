@@ -65,10 +65,9 @@
                   continue-on-error: true
     
                 - name: Run Test and Coverage
-                      run: |
-                        cd app_web/optimeal
-                        coverage run -m pytest -v
-                        coverage report --fail-under=80
-                      env:
-                        APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}
-                        DJANGO_SETTINGS_MODULE: optimeal.settings_test
+                  run: |
+                    coverage run -m pytest app_web -vv
+                    coverage report --fail-under=80
+                  env:
+                    APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}
+                    DJANGO_SETTINGS_MODULE: optimeal.settings_test
