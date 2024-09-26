@@ -5,6 +5,11 @@ from django.contrib.auth import get_user_model
 from unittest.mock import patch
 from blog.forms import PredictionForm
 from authentication.forms import CustomUserChangeForm
+from django.test.utils import setup_test_environment
+import django
+django.setup()
+
+setup_test_environment()
 
 User = get_user_model()
 
