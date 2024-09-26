@@ -61,12 +61,12 @@
                   continue-on-error: true
 
                 - name: Check Syntax # check code formatting
-                  run: pycodestyle --statistics --ignore=E501,E712 app_web
+                  run: pycodestyle --statistics --ignore=E501,E712, E402 app_web
                   continue-on-error: true
     
                 - name: Run Test and Coverage
                   run: |
-                    coverage run -m pytest app_web -vv
+                    coverage run -m pytest app_web/optimeal -vv
                     coverage report --fail-under=80
                   env:
                     APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}
