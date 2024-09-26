@@ -17,5 +17,6 @@ omit =
     */test_*.py
     */*_test.py
     */tests/*
+    */opentelemetry_setup.py
     */models.py
     */__init__.py
