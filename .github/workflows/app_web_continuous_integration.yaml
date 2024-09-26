@@ -71,3 +71,4 @@
                   env:
                     APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}
                     DJANGO_SETTINGS_MODULE: optimeal.settings_test
+                    
