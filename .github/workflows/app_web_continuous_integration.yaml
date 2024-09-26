@@ -49,21 +49,15 @@
                 
                 - name: Install dependencies
                   run: |
-                    pip install -r app_web/requirements.txt
+                    pip install -r app_web/optimeal/requirements.txt
                     pip install pytest pytest-cov
                     pip install pycodestyle
-                    
-                - name: Install autopep8
-                  run: pip install autopep8
-
-                - name: Run autopep8
-                  run: autopep8 --in-place --aggressive --aggressive app_web/feature_engineering.py
-
+                
                 - name: Install Bandit
                   run: pip install bandit
 
                 - name: Run Security Check
-                  run: bandit -r api
+                  run: bandit -r app_web
                   continue-on-error: true
 
                 - name: Check Syntax # check code formatting

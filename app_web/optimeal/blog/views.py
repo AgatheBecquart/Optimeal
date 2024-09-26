@@ -24,15 +24,11 @@ load_dotenv()
 
 def predict_view(request):
     with tracer.start_as_current_span("predict_view_span"):
-        context = {
-            'form': PredictionForm(),
-            'temperature': None,
-            'error': None
-        }
+        context = {"form": PredictionForm(), "temperature": None, "error": None}
 
         if request.method == "POST":
             form = PredictionForm(request.POST)
-            context['form'] = form
+            context["form"] = form
             if form.is_valid():
                 with tracer.start_as_current_span("form_processing"):
                     id_jour = form.cleaned_data["id_jour"].strftime("%Y-%m-%d")
@@ -48,20 +44,21 @@ def predict_view(request):
                             headers=headers,
                         )
                         response.raise_for_status()
-                        context['result'] = response.json()
+                        context["result"] = response.json()
 
-                        prediction_value = context['result'].get("prediction", 0)
+                        prediction_value = context["result"].get("prediction", 0)
                         rounded_prediction_value = round(prediction_value)
                         logger.info(f"Prediction result: {rounded_prediction_value}")
                         prediction_counter_per_minute.add(1)
 
                     except requests.exceptions.RequestException as e:
-                        context['error'] = str(e)
+                        context["error"] = str(e)
                         logger.error(f"API request failed: {context['error']}")
             else:
-                context['error'] = "Formulaire invalide. Veuillez réessayer."
+                context["error"] = "Formulaire invalide. Veuillez réessayer."
 
         return render(request, "blog/predict.html", context)
+
 
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required

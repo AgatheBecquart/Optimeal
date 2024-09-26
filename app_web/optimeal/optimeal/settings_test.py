@@ -67,9 +67,9 @@ TEMPLATES = [
 WSGI_APPLICATION = "optimeal.wsgi.application"
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': ':memory:',
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": ":memory:",
     }
 }
 
@@ -128,4 +128,3 @@ MONITORING = os.getenv("MONITORING", default=False)
 
 if MONITORING:
     import optimeal.opentelemetry_setup
-
