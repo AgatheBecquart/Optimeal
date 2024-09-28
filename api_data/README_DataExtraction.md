@@ -39,6 +39,13 @@ Configuration
 Créez un fichier **.env** à la racine du projet avec les variables
 suivantes :
 
+-   SERVER : l\'adresse du serveur SQL
+-   DATABASE : le nom de la base de données
+-   AZUREUSER : le nom d\'utilisateur pour la connexion à la base de
+    données
+-   PASSWORD : le mot de passe pour la connexion à la base de données
+-   API\_KEY : la clé API pour le service météorologique
+
 Assurez-vous d\'avoir le pilote ODBC 17 pour SQL Server installé sur
 votre système.
 
@@ -53,8 +60,7 @@ Le script crée trois tables principales :
 -   **RepasVendus** : Enregistre le nombre de couverts vendus par jour.
 -   **PresenceRH** : Contient les données de présence des employés.
 
-La structure de ces tables est définie dans : *\[ajoutez le lien ou la
-référence ici\]*
+La structure de ces tables est définie dans **models.py**
 
 ### Extraction et insertion des données météorologiques
 
@@ -63,18 +69,36 @@ La fonction **get\_weather\_data\_for\_period** effectue les requêtes
 API pour une période donnée. Les données sont ensuite insérées dans la
 table Meteo à l\'aide de la fonction **insert\_weather\_data**.
 
-Voir les détails dans : *\[ajoutez le lien ou la référence ici\]*
+### Importation des données de repas vendus par CSV
 
-### Importation des données CSV
+Les données de repas vendus sont importées à partir de fichiers CSV. La
+fonction **insert\_csv\_data** gère l\'insertion de ces données dans les
+tables respectives.
 
-Les données de repas vendus et de présence RH sont importées à partir de
-fichiers CSV. La fonction **insert\_csv\_data** gère l\'insertion de ces
-données dans les tables respectives.
+### Extraction des données RH
+
+Les données RH sont extraites du SI de la Banque Populaire du Nord à
+l\'aide d\'une requête SQL complexe avant d\'être enregistrées dans un
+fichier CSV. Ce fichier est ensuite chargé dans les tables de la base de
+données.
+
+La requête SQL utilise les filtres suivants :
+
+-   Utilisation de jointures LEFT JOIN pour lier les différentes tables
+    de données RH.
+-   Filtrage des jours de travail en excluant les week-ends (NUMJS NOT
+    IN (\'6\', \'7\')).
+-   Sélection uniquement des présences physiques (TYPE\_PRESENCE =
+    \'P\').
+-   Exclusion de certains motifs de présence comme le télétravail et les
+    déplacements.
+-   Filtrage des structures organisationnelles spécifiques.
+
+Cette requête permet d\'obtenir des données précises sur la présence des
+employés, essentielles pour la prévision des couverts de la cantine.
 
 Pour la table PresenceRH, les identifiants des agents sont anonymisés
 avant l\'insertion.
-
-Référez-vous à : *\[ajoutez le lien ou la référence ici\]*
 
 ### Anonymisation des données
 
@@ -123,7 +147,3 @@ Sécurité
     sont stockées dans le fichier **.env** et ne doivent pas être
     partagées ou versionnées.
 -   Les identifiants des agents sont anonymisés pour respecter le RGPD.
-
-Ce README fournit une documentation détaillée du script d\'extraction
-des données, couvrant sa configuration, ses fonctionnalités principales,
-et son utilisation.

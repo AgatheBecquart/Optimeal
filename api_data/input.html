@@ -33,6 +33,13 @@
 
     <h2>Configuration</h2>
     <p>Créez un fichier <strong>.env</strong> à la racine du projet avec les variables suivantes :</p>
+    <ul>
+        <li>SERVER : l'adresse du serveur SQL</li>
+        <li>DATABASE : le nom de la base de données</li>
+        <li>AZUREUSER : le nom d'utilisateur pour la connexion à la base de données</li>
+        <li>PASSWORD : le mot de passe pour la connexion à la base de données</li>
+        <li>API_KEY : la clé API pour le service météorologique</li>
+    </ul>
     <p>Assurez-vous d'avoir le pilote ODBC 17 pour SQL Server installé sur votre système.</p>
 
     <h2>Fonctionnalités principales</h2>
@@ -44,20 +51,35 @@
         <li><strong>RepasVendus</strong> : Enregistre le nombre de couverts vendus par jour.</li>
         <li><strong>PresenceRH</strong> : Contient les données de présence des employés.</li>
     </ul>
-    <p>La structure de ces tables est définie dans : <em>[ajoutez le lien ou la référence ici]</em></p>
+    <p>La structure de ces tables est définie dans <strong>models.py</strong></p>
 
     <h3>Extraction et insertion des données météorologiques</h3>
     <p>
         Les données météorologiques sont récupérées via l'API OpenWeatherMap. La fonction <strong>get_weather_data_for_period</strong> effectue les requêtes API pour une période donnée. Les données sont ensuite insérées dans la table Meteo à l'aide de la fonction <strong>insert_weather_data</strong>.
     </p>
-    <p>Voir les détails dans : <em>[ajoutez le lien ou la référence ici]</em></p>
 
-    <h3>Importation des données CSV</h3>
+    <h3>Importation des données de repas vendus par CSV</h3>
     <p>
-        Les données de repas vendus et de présence RH sont importées à partir de fichiers CSV. La fonction <strong>insert_csv_data</strong> gère l'insertion de ces données dans les tables respectives.
+        Les données de repas vendus sont importées à partir de fichiers CSV. La fonction <strong>insert_csv_data</strong> gère l'insertion de ces données dans les tables respectives.
+    </p>
+    <h3>Extraction des données RH</h3>
+    <p>
+        Les données RH sont extraites du SI de la Banque Populaire du Nord à l'aide d'une requête SQL complexe avant d'être enregistrées dans un fichier CSV. Ce fichier est ensuite chargé dans les tables de la base de données.
+    </p>
+    <p>
+        La requête SQL utilise les filtres suivants :
+    </p>
+    <ul>
+        <li>Utilisation de jointures LEFT JOIN pour lier les différentes tables de données RH.</li>
+        <li>Filtrage des jours de travail en excluant les week-ends (NUMJS NOT IN ('6', '7')).</li>
+        <li>Sélection uniquement des présences physiques (TYPE_PRESENCE = 'P').</li>
+        <li>Exclusion de certains motifs de présence comme le télétravail et les déplacements.</li>
+        <li>Filtrage des structures organisationnelles spécifiques.</li>
+    </ul>
+    <p>
+        Cette requête permet d'obtenir des données précises sur la présence des employés, essentielles pour la prévision des couverts de la cantine.
     </p>
     <p>Pour la table PresenceRH, les identifiants des agents sont anonymisés avant l'insertion.</p>
-    <p>Référez-vous à : <em>[ajoutez le lien ou la référence ici]</em></p>
 
     <h3>Anonymisation des données</h3>
     <p>
@@ -93,8 +115,5 @@
         <li>Les identifiants des agents sont anonymisés pour respecter le RGPD.</li>
     </ul>
 
-    <p>
-        Ce README fournit une documentation détaillée du script d'extraction des données, couvrant sa configuration, ses fonctionnalités principales, et son utilisation.
-    </p>
 </body>
 </html>
