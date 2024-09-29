@@ -137,7 +137,7 @@ def feature_engineering(df):
         if weather_data:
             current_weather = weather_data["data"][
                 0
-            ]  # Supposons que la réponse contient les données dans 'data'
+            ]  
             df.loc[index, "temp"] = current_weather.get("temp", None)
             df.loc[index, "feels_like"] = current_weather.get("feels_like", None)
             df.loc[index, "pressure"] = current_weather.get("pressure", None)

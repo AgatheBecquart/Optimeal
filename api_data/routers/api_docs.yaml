@@ -1,0 +1,310 @@
+openapi: 3.0.0
+info:
+  title: API de Gestion des Employés de Cantine
+  version: 1.0.0
+  description: Cette API permet de gérer les employés de cantine et l'authentification des utilisateurs.
+
+servers:
+  - url: http://optimeal-data.switzerlandnorth.azurecontainer.io:8000
+    description: Serveur de production Azure
+  - url: http://localhost:8000
+    description: Serveur de développement local
+
+paths:
+  /:
+    get:
+      summary: Vérifier l'état du serveur
+      responses:
+        '200':
+          description: Le serveur fonctionne correctement
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "Server is running."
+
+  /auth/create_user:
+    post:
+      summary: Créer un nouvel utilisateur
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreate'
+      responses:
+        '200':
+          description: Utilisateur créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /auth/token:
+    post:
+      summary: Obtenir un jeton d'accès
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - password
+      responses:
+        '200':
+          description: Jeton d'accès généré avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+        '401':
+          description: Nom d'utilisateur ou mot de passe incorrect
+
+  /auth/is_authorized:
+    get:
+      summary: Vérifier l'autorisation de l'utilisateur
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Utilisateur autorisé
+          content:
+            application/json:
+              schema:
+                type: boolean
+        '401':
+          description: Non autorisé
+
+  /employees:
+    get:
+      summary: Obtenir la liste des employés
+      responses:
+        '200':
+          description: Liste des employés récupérée avec succès
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CanteenEmployeeUser'
+        '404':
+          description: Aucun employé trouvé
+    post:
+      summary: Créer un nouvel employé
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CanteenEmployeeUserCreate'
+      responses:
+        '200':
+          description: Employé créé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CanteenEmployeeUser'
+        '401':
+          description: Non autorisé
+
+  /employees/{employee_id}:
+    get:
+      summary: Obtenir les détails d'un employé
+      parameters:
+        - in: path
+          name: employee_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Détails de l'employé récupérés avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CanteenEmployeeUser'
+        '404':
+          description: Employé non trouvé
+    put:
+      summary: Mettre à jour les informations d'un employé
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: employee_id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CanteenEmployeeUserUpdate'
+      responses:
+        '200':
+          description: Informations de l'employé mises à jour avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CanteenEmployeeUser'
+        '401':
+          description: Non autorisé
+        '404':
+          description: Employé non trouvé
+    delete:
+      summary: Supprimer un employé
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: employee_id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Employé supprimé avec succès
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CanteenEmployeeUser'
+        '401':
+          description: Non autorisé
+        '404':
+          description: Employé non trouvé
+
+components:
+  schemas:
+    Token:
+      type: object
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        full_name:
+          type: string
+        disabled:
+          type: boolean
+
+    UserCreate:
+      type: object
+      properties:
+        username:
+          type: string
+        email:
+          type: string
+        full_name:
+          type: string
+        password:
+          type: string
+      required:
+        - username
+        - email
+        - full_name
+        - password
+
+    CanteenEmployeeUser:
+      type: object
+      properties:
+        employee_id:
+          type: string
+        employee_unique_id:
+          type: string
+        employee_username:
+          type: string
+        employee_password:
+          type: string
+        employee_email:
+          type: string
+        employee_first_name:
+          type: string
+        employee_last_name:
+          type: string
+        employee_zip_code_prefix:
+          type: string
+        employee_city:
+          type: string
+        employee_state:
+          type: string
+
+    CanteenEmployeeUserCreate:
+      type: object
+      properties:
+        employee_unique_id:
+          type: string
+        employee_username:
+          type: string
+        employee_password:
+          type: string
+        employee_email:
+          type: string
+        employee_first_name:
+          type: string
+        employee_last_name:
+          type: string
+        employee_zip_code_prefix:
+          type: string
+        employee_city:
+          type: string
+        employee_state:
+          type: string
+      required:
+        - employee_unique_id
+        - employee_username
+        - employee_password
+        - employee_email
+        - employee_first_name
+        - employee_last_name
+        - employee_zip_code_prefix
+        - employee_city
+        - employee_state
+
+    CanteenEmployeeUserUpdate:
+      type: object
+      properties:
+        employee_unique_id:
+          type: string
+        employee_username:
+          type: string
+        employee_password:
+          type: string
+        employee_email:
+          type: string
+        employee_first_name:
+          type: string
+        employee_last_name:
+          type: string
+        employee_zip_code_prefix:
+          type: string
+        employee_city:
+          type: string
+        employee_state:
+          type: string
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - BearerAuth: []

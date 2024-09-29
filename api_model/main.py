@@ -6,8 +6,10 @@ from fastapi.params import Depends
 from api_model.utils import has_access, generate_token
 import sys
 import uvicorn
+from api_model.openapi import custom_openapi
 
 app = FastAPI()
+app.openapi = custom_openapi
 
 # routes
 PROTECTED = [Depends(has_access)]

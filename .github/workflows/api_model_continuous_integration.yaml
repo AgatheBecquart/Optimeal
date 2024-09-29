@@ -78,4 +78,4 @@
                     coverage report --fail-under=80
                   env:
                     APPLICATIONINSIGHTS_CONNECTION_STRING: ${{ secrets.APPLICATIONINSIGHTS_CONNECTION_STRING }}
-                    #
+                    

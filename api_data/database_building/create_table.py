@@ -231,11 +231,12 @@ try:
             id_agent_anonymise INT,
             heure DATETIME,
             id_motif INT,
-            lib_motif TEXT,
-            type_presence TEXT,
-            origine TEXT,
+            lib_motif VARCHAR(50),
+            type_presence VARCHAR(50),
+            origine VARCHAR(50),
             date_traitement DATE,
-            date_j DATE
+            date_j DATE,
+            PRIMARY KEY (id_agent_anonymise, date_j, heure)
         );
         """,
     ]

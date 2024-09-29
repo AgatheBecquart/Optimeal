@@ -103,7 +103,7 @@ avant l\'insertion.
 ### Anonymisation des données
 
 Pour respecter le RGPD, les identifiants des agents sont anonymisés
-avant l\'insertion dans la base de données :
+avant l\'insertion dans la base de données.
 
 Utilisation
 -----------
@@ -127,7 +127,7 @@ Modèles de données
 ------------------
 
 Les modèles de données sont définis dans **models.py** pour assurer la
-cohérence et la validation des données :
+cohérence et la validation des données.
 
 Remarques importantes
 ---------------------
