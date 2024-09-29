@@ -47,8 +47,7 @@ def predict_view(request):
                         context["result"] = {} 
 
                         prediction_value = context["result"].get("prediction")
-                        rounded_prediction_value = round(prediction_value)
-                        logger.info(f"Prediction result: {rounded_prediction_value}")
+                        logger.info(f"Prediction result: {prediction_value}")
                         prediction_counter_per_minute.add(1)
 
                     except requests.exceptions.RequestException as e:
