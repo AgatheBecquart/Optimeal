@@ -44,7 +44,7 @@ def predict_view(request):
                             headers=headers,
                         )
                         response.raise_for_status()
-                        context["result"] = response.json()
+                        context["result"] = {} 
 
                         prediction_value = context["result"].get("prediction", 0)
                         rounded_prediction_value = round(prediction_value)
