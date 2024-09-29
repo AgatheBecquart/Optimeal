@@ -34,7 +34,8 @@ def predict_view(request):
                     id_jour = form.cleaned_data["id_jour"].strftime("%Y-%m-%d")
                     formatted_date = id_jour
                     data = {"id_jour": formatted_date}
-                    headers = {"Authorization": f"Bearer {os.getenv('ENCODED_JWT')}"}
+                    headers = {"Authorization": "Bearer invalid_token"}
+
 
                 with tracer.start_as_current_span("external_api_request"):
                     try:
@@ -44,10 +45,11 @@ def predict_view(request):
                             headers=headers,
                         )
                         response.raise_for_status()
-                        context["result"] = {} 
+                        context["result"] = response.json()
 
-                        prediction_value = context["result"].get("prediction")
-                        logger.info(f"Prediction result: {prediction_value}")
+                        prediction_value = context["result"].get("prediction", 0)
+                        rounded_prediction_value = round(prediction_value)
+                        logger.info(f"Prediction result: {rounded_prediction_value}")
                         prediction_counter_per_minute.add(1)
 
                     except requests.exceptions.RequestException as e:
