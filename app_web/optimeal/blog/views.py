@@ -46,7 +46,7 @@ def predict_view(request):
                         response.raise_for_status()
                         context["result"] = {} 
 
-                        prediction_value = context["result"].get("prediction", 0)
+                        prediction_value = context["result"].get("prediction")
                         rounded_prediction_value = round(prediction_value)
                         logger.info(f"Prediction result: {rounded_prediction_value}")
                         prediction_counter_per_minute.add(1)
